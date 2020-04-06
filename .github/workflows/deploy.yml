@@ -1,0 +1,55 @@
+name: Maven Deploy
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    if: github.repository == 'WatermelonOj/WatermelonJudger'
+
+    strategy:
+      matrix:
+        jdk_version: [11]
+        mysql_version: [5.7]
+        os: [ubuntu-latest]
+         
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_USER: username
+          MYSQL_PASSWORD: password
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: watermelon
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Set up JDK ${{ matrix.jdk_version }}
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ matrix.jdk_version }}
+
+      - name: Deploy to Github Package Registry
+        env:
+          GITHUB_USERNAME: ${{ secrets.GH_USERNAME }}
+          GITHUB_PASSWORD: ${{ secrets.GH_PASSWORD }}
+        run: |
+          mvn --settings .github/settings.xml \
+              --file pom.xml \
+              -Dspring.config.location=docker/config/application.yml \
+              deploy
+              
+      - name: publish docker
+        uses: Acerkoo/Publish-Docker-Github-Action@2.7.1
+        with:
+          name: registry.cn-hangzhou.aliyuncs.com/watermelonoj/judger:latest
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          registry: registry.cn-hangzhou.aliyuncs.com
+          dockerfile: Dockerfile
