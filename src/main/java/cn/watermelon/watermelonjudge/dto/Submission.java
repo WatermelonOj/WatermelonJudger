@@ -3,7 +3,7 @@ package cn.watermelon.watermelonjudge.dto;
 import cn.watermelon.watermelonjudge.entity.ProblemResult;
 import cn.watermelon.watermelonjudge.enumeration.JudgeStatusEnum;
 import cn.watermelon.watermelonjudge.enumeration.LanguageEnum;
-import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import java.util.Date;
 
@@ -39,7 +39,7 @@ public class Submission {
      * 代码提交时间
      * 格式为 yyyy-MM-dd HH:mm:ss
      */
-    @JSONField(format="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     private Date subTime;
 
     /**

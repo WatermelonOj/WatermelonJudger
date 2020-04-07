@@ -41,7 +41,7 @@ public class JudgeServiceImpl implements JudgeService {
     private static Runtime runtime = Runtime.getRuntime();
 
     @Autowired
-    private ProblemService problemService;
+    private RecordService recordService;
 
     /**
      * 返回用户代码保存目录
@@ -59,7 +59,7 @@ public class JudgeServiceImpl implements JudgeService {
         String compileErrorOutput = null;
 
         problemResult.setStatus(JudgeStatusEnum.Compiling.getStatus());
-        int subId = problemService.insertProblemRusult(problemResult);
+        int subId = recordService.insertProblemRusult(problemResult);
         problemResult.setSubId(subId);
 
         if (languageEnum.isRequiredCompile()) {
@@ -82,7 +82,7 @@ public class JudgeServiceImpl implements JudgeService {
             compileErrorOutput = StringUtil.getLimitLenghtByString(compileErrorOutput, 1000);
             problemResult.setStatus(JudgeStatusEnum.Compile_Error.getStatus());
             problemResult.setErrorMsg(compileErrorOutput);
-            problemService.updateProblemResult(problemResult);
+            recordService.updateProblemResult(problemResult);
             return null;
         }
     }
@@ -96,13 +96,13 @@ public class JudgeServiceImpl implements JudgeService {
     @Override
     public void execute(ProblemResult problemResult, String userDirPath) {
 //         update judging
-        problemService.updateProblemResultStatusById(problemResult.getSubId(), JudgeStatusEnum.Judging.getStatus());
+        recordService.updateProblemResultStatusById(problemResult.getSubId(), JudgeStatusEnum.Judging.getStatus());
 
         String problemDirPath = fileServerTestcaseDir + envOs + problemResult.getProblemId();
         String inputFileDirPath = problemDirPath + envOs + "input";
         String outputFileDirPath = problemDirPath + envOs + "output";
 
-        Problem problem = problemService.getProblemById(problemResult.getProblemId());
+        Problem problem = recordService.getProblemById(problemResult.getProblemId());
 
         try {
             // 执行输入和输出
@@ -185,13 +185,13 @@ public class JudgeServiceImpl implements JudgeService {
             problemResult.setRunMemory(maxMemory);
             problemResult.setRunTime(maxTime);
             problemResult.setStatus(status);
-            problemService.updateProblemResult(problemResult);
+            recordService.updateProblemResult(problemResult);
 
         } catch (Exception e) {
             // 执行脚本错误或没有测试用例或闭锁中断 Exception (update database
             String message = StringUtil.getLimitLenghtByString(e.getMessage(), 1000);
             problemResult.setErrorMsg(message);
-            problemService.updateProblemResultStatusById(problemResult.getProblemId(), JudgeStatusEnum.Runtime_Error.getStatus());
+            recordService.updateProblemResultStatusById(problemResult.getProblemId(), JudgeStatusEnum.Runtime_Error.getStatus());
 
             log.info("执行脚本错误或闭锁终端, e = ", e);
         } finally {

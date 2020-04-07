@@ -17,7 +17,7 @@ public enum LanguageEnum {
     /**
      * Ｃ++语言
      */
-    CPP("CPP", "cpp",true),
+    CPP("Cpp", "cpp",true),
     /**
      * Python2语言
      */

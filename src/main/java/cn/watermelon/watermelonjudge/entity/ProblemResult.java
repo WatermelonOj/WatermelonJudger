@@ -1,7 +1,7 @@
 package cn.watermelon.watermelonjudge.entity;
 
 import cn.watermelon.watermelonjudge.dto.TestResult;
-import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -38,7 +38,7 @@ public class ProblemResult implements Serializable {
 
     private String sourceCode;
 
-    @JSONField(format="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     private Date subTime;
 
     private ConcurrentSkipListMap<Integer, TestResult> resultMap = new ConcurrentSkipListMap<>();
