@@ -1,12 +1,14 @@
 package cn.watermelon.watermelonjudge.services;
 
 import cn.watermelon.watermelonjudge.entity.ProblemResult;
+import org.springframework.stereotype.Service;
 
 /**
  * 用户代码编译与执行
  * @author Acerkoo
  * @version 1.0.0
  */
+@Service
 public interface JudgeService {
 
     /**

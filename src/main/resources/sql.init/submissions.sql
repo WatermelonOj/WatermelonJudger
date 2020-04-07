@@ -9,7 +9,8 @@ CREATE TABLE IF NOT EXISTS `submissions`
     `run_memory` INT,
     `result` INT,
     `code` TEXT,
-    `language` VARCHAR(20)
+    `language` VARCHAR(20),
+    `is_delete` BIT
 )
 
     COLLATE = utf8mb4_general_ci

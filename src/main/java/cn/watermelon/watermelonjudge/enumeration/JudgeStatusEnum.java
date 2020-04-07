@@ -1,6 +1,5 @@
 package cn.watermelon.watermelonjudge.enumeration;
 
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -29,7 +28,7 @@ public enum JudgeStatusEnum {
 
     Queuing(8, "QUEUEING"),
 
-    Judging(9, "Judging");
+    Judging(9, "JUDGING");
 
     private Integer status;
 
