@@ -4,9 +4,6 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: root
-#    schema:
-#      - classpath:sql/init/*.sql
-#    initialization-mode: always
 
   thymeleaf:
     cache: false
