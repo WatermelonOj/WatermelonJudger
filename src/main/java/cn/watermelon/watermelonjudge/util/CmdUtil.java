@@ -19,7 +19,7 @@ public class CmdUtil {
      */
     public static String compileCmd(String type, String dir) {
 
-        if (LanguageEnum.JAVA8.getType().equals(type)) {
+        if (LanguageEnum.Java8.getType().equals(type)) {
             if (dir != null && !"".equals(dir)) {
                 return "javac " + dir + "/Main.java";
             } else {
@@ -52,7 +52,7 @@ public class CmdUtil {
     public static ProcessBuilder executeCmd(String type, String dir) {
         ProcessBuilder builder = null;
 
-        if (LanguageEnum.JAVA8.getType().equals(type)) {
+        if (LanguageEnum.Java8.getType().equals(type)) {
             if (dir != null && !"".equals(dir)) {
                 builder = new ProcessBuilder("java", "-classpath", dir, "Main");
             } else {
@@ -70,13 +70,13 @@ public class CmdUtil {
             } else {
                 builder = new ProcessBuilder("C++.out");
             }
-        } else if (LanguageEnum.PYTHON2.getType().equals(type)) {
+        } else if (LanguageEnum.Python2.getType().equals(type)) {
             if (dir != null && !"".equals(dir)) {
                 builder = new ProcessBuilder("python", dir + "/Main.py");
             } else {
                 builder = new ProcessBuilder("python", "Main.py");
             }
-        } else if (LanguageEnum.PYTHON3.getType().equals(type)) {
+        } else if (LanguageEnum.Python3.getType().equals(type)) {
             if (dir != null && !"".equals(dir)) {
                 builder = new ProcessBuilder("python3", dir + "/Main.py3");
             } else {

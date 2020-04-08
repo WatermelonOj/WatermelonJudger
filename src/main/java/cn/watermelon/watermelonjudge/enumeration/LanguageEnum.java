@@ -9,7 +9,7 @@ public enum LanguageEnum {
     /**
      * Java8语言
      */
-    JAVA8("Java8", "java",true),
+    Java8("Java8", "java",true),
     /**
      * C语言
      */
@@ -17,15 +17,15 @@ public enum LanguageEnum {
     /**
      * Ｃ++语言
      */
-    CPP("Cpp", "cpp",true),
+    CPP("CPP", "cpp",true),
     /**
      * Python2语言
      */
-    PYTHON2("Python2", "py",false),
+    Python2("Python2", "py",false),
     /**
      * Python3语言
      */
-    PYTHON3("Python3", "py3",false);
+    Python3("Python3", "py3",false);
 
     private String type;
 

@@ -20,7 +20,7 @@ public enum JudgeStatusEnum {
 
     Runtime_Error(4, "RE"),
 
-    Time_limit_Exceeded(5, "TLE"),
+    Time_Limit_Exceeded(5, "TLE"),
 
     Memory_Limit_Exceeded(6, "MLE"),
 
