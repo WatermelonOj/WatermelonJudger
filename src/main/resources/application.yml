@@ -5,10 +5,7 @@ spring:
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
-    schema:
-      - classpath:sql/init/*.sql
-    initialization-mode: always
-
+  
 # mybatis
 mybatis:
   configuration:
