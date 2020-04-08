@@ -32,6 +32,7 @@ public interface ProblemResultMapper {
     @Results(value = {
             @Result(property = "status", column = "result"),
             @Result(property = "sourceCode", column = "code"),
+            @Result(property = "language", column = "language"),
     })
     List<ProblemResult> getSubmissions(int begin, int pageSize);
 
@@ -50,6 +51,7 @@ public interface ProblemResultMapper {
     @Results(value = {
             @Result(property = "status", column = "result"),
             @Result(property = "sourceCode", column = "code"),
+            @Result(property = "language", column = "language"),
     })
     List<ProblemResult> getSubmissionsByUser(int userId, int begin, int pageSize);
 
@@ -62,6 +64,7 @@ public interface ProblemResultMapper {
     @Results(value = {
             @Result(property = "status", column = "result"),
             @Result(property = "sourceCode", column = "code"),
+            @Result(property = "language", column = "language"),
     })
     List<ProblemResult> getSubmissionsByContest(int contestId, int begin, int pageSize);
 
@@ -74,6 +77,7 @@ public interface ProblemResultMapper {
     @Results(value = {
             @Result(property = "status", column = "result"),
             @Result(property = "sourceCode", column = "code"),
+            @Result(property = "language", column = "language"),
     })
     List<ProblemResult> getSubmissionsByProblem(int problemId, int begin, int pageSize);
 
@@ -86,6 +90,7 @@ public interface ProblemResultMapper {
     @Results(value = {
             @Result(property = "status", column = "result"),
             @Result(property = "sourceCode", column = "code"),
+            @Result(property = "language", column = "language"),
     })
     List<ProblemResult> getSubmissionsByStatus(int status, int begin, int pageSize);
 
@@ -98,6 +103,7 @@ public interface ProblemResultMapper {
     @Results(value = {
             @Result(property = "status", column = "result"),
             @Result(property = "sourceCode", column = "code"),
+            @Result(property = "language", column = "language"),
     })
     List<ProblemResult> getSubmissionsByLanguage(String language, int begin, int pageSize);
 

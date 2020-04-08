@@ -105,7 +105,7 @@ public class TestInputWork implements Runnable {
             log.info("judge is tle");
             process.destroyForcibly();
             // TLE
-            testResult.setStatus(JudgeStatusEnum.Time_limit_Exceeded.getStatus());
+            testResult.setStatus(JudgeStatusEnum.Time_Limit_Exceeded.getStatus());
             resultMap.put(testCaseNum, testResult);
         } catch (Exception e) {
             e.printStackTrace();
@@ -127,7 +127,7 @@ public class TestInputWork implements Runnable {
 //        System.out.println(base);
         try {
             if (problem.getTimeLimit() * base < testResult.getTime()) {
-                testResult.setStatus(JudgeStatusEnum.Time_limit_Exceeded.getStatus());
+                testResult.setStatus(JudgeStatusEnum.Time_Limit_Exceeded.getStatus());
                 return;
             }
             if (problem.getMemoryLimit() < testResult.getMemory()) {

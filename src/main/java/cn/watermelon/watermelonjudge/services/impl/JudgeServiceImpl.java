@@ -35,7 +35,7 @@ public class JudgeServiceImpl implements JudgeService {
 
     private static final String envOs = "/";
 
-    @Value("C:/Users/7479/Desktop/problem")
+    @Value("/problem")
     private String fileServerTestcaseDir;
 
     private static Runtime runtime = Runtime.getRuntime();
@@ -165,9 +165,9 @@ public class JudgeServiceImpl implements JudgeService {
                     } else if (JudgeStatusEnum.Wrong_Answer.getStatus().equals(testResult.getStatus())) {
                         // WA
                         status = JudgeStatusEnum.Wrong_Answer.getStatus();
-                    } else if (JudgeStatusEnum.Time_limit_Exceeded.getStatus().equals(testResult.getStatus())) {
+                    } else if (JudgeStatusEnum.Time_Limit_Exceeded.getStatus().equals(testResult.getStatus())) {
                         // TLE
-                        status = JudgeStatusEnum.Time_limit_Exceeded.getStatus();
+                        status = JudgeStatusEnum.Time_Limit_Exceeded.getStatus();
                     } else if (JudgeStatusEnum.Memory_Limit_Exceeded.getStatus().equals(testResult.getStatus())) {
                         // MLE
                         status = JudgeStatusEnum.Memory_Limit_Exceeded.getStatus();
