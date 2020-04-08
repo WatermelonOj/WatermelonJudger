@@ -37,8 +37,8 @@ jobs:
 
       - name: Deploy to Github Package Registry
         env:
-          GITHUB_USERNAME: ${{ secrets.Username }}
-          GITHUB_PASSWORD: ${{ secrets.Password }}
+          GITHUB_USERNAME: ${{ secrets.GH_USERNAME }}
+          GITHUB_PASSWORD: ${{ secrets.GH_PASSWORD }}
         run: |
           mvn --settings .github/settings.xml \
               --file pom.xml \
