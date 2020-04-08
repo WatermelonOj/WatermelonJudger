@@ -42,7 +42,6 @@ jobs:
         run: |
           mvn --settings .github/settings.xml \
               --file pom.xml \
-              -Dspring.config.location=docker/config/application.yml \
               deploy
               
       - name: publish docker
