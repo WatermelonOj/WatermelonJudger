@@ -36,7 +36,7 @@ public interface ProblemResultMapper {
     })
     List<ProblemResult> getSubmissions(int begin, int pageSize);
 
-    @Select({"SELECT *",
+    @Select({"SELECT COUNT(*)",
             "FROM `submissions`",
             "WHERE `is_delete` = false"
     })

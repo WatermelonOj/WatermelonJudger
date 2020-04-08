@@ -53,17 +53,6 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
         </plugins>
-<!--        <resources>-->
-<!--            <resource>-->
-<!--                <directory>docker/</directory>-->
-<!--                <includes>-->
-<!--                    <include>**/config/*.yml</include>-->
-<!--&lt;!&ndash;                    <include>**/*.properties</include>&ndash;&gt;-->
-<!--&lt;!&ndash;                    <include>**/*.xml</include>&ndash;&gt;-->
-<!--                </includes>-->
-<!--                <filtering>false</filtering>-->
-<!--            </resource>-->
-<!--        </resources>-->
     </build>
 
     <repositories>
@@ -76,7 +65,6 @@
             </snapshots>
         </repository>
     </repositories>
-
 
 </project>
 
