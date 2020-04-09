@@ -27,15 +27,15 @@ public class CmdUtil {
             }
         } else if (LanguageEnum.C.getType().equals(type)) {
             if (dir != null && !"".equals(dir)) {
-                return "gcc -std=99 -O2 " + dir + "/Main.c -o " + dir + "/C.out";
+                return "gcc -std=c99 " + dir + "/Main.c -o " + dir + "/C.out";
             } else {
-                return "gcc -std=99 -O2 Main.c -o C.out";
+                return "gcc -std=c99 Main.c -o C.out";
             }
         } else if (LanguageEnum.CPP.getType().equals(type)) {
             if (dir != null && !"".equals(dir)) {
-                return "g++ -std=c++11 -O2 " + dir + envOs + "Main.cpp -o " + dir + envOs + "C++.out";
+                return "g++ -std=c++11" + dir + envOs + "Main.cpp -o " + dir + envOs + "C++.out";
             } else {
-                return "g++ -std=c++11 -O2 Main.cpp -o C++.out";
+                return "g++ -std=c++11 Main.cpp -o C++.out";
             }
         } else {
             return null;
@@ -54,7 +54,7 @@ public class CmdUtil {
 
         if (LanguageEnum.Java8.getType().equals(type)) {
             if (dir != null && !"".equals(dir)) {
-                builder = new ProcessBuilder("java", "-classpath", dir, "Main");
+                builder = new ProcessBuilder("java", "-classpath", dir, "/Main");
             } else {
                 builder = new ProcessBuilder("java", "Main");
             }

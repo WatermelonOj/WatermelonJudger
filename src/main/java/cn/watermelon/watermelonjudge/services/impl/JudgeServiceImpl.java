@@ -64,9 +64,11 @@ public class JudgeServiceImpl implements JudgeService {
         int subId = recordService.insertProblemRusult(problemResult);
         problemResult.setSubId(subId);
 
+        String cmd = null;
         if (languageEnum.isRequiredCompile()) {
             try {
-                Process process = runtime.exec(CmdUtil.compileCmd(problemResult.getLanguage(), userDirPath));
+                cmd = CmdUtil.compileCmd(problemResult.getLanguage(), userDirPath);
+                Process process = runtime.exec(cmd);
                 compileErrorOutput = StreamUtil.getOutput(process.getErrorStream());
             } catch (IOException e) {
                 e.printStackTrace();
@@ -76,14 +78,15 @@ public class JudgeServiceImpl implements JudgeService {
             }
         }
 
-        if (compileErrorOutput == null || "".equals(compileErrorOutput)) {
+        if (compileErrorOutput == null || "".equals(compileErrorOutput) || cmd != null) {
             return userDirPath;
         } else {
-
             // update compile error
-            compileErrorOutput = StringUtil.getLimitLenghtByString(compileErrorOutput, 1000);
+            compileErrorOutput = StringUtil.getLimitLenghtByString(compileErrorOutput, 10000);
             problemResult.setStatus(JudgeStatusEnum.Compile_Error.getStatus());
             problemResult.setErrorMsg(compileErrorOutput);
+            problemResult.setRunMemory(0L);
+            problemResult.setRunTime(0L);
             recordService.updateProblemResult(problemResult);
             return null;
         }
@@ -145,7 +148,7 @@ public class JudgeServiceImpl implements JudgeService {
 
             for (Map.Entry<String, TestResult> entry : entrySet) {
                 TestResult testResult = entry.getValue();
-                System.out.println(testResult);
+//                System.out.println(testResult);
 
                 if (testResult.getTime() > maxTime) {
                     maxTime = testResult.getTime();
@@ -202,6 +205,7 @@ public class JudgeServiceImpl implements JudgeService {
             // 执行脚本错误或没有测试用例或闭锁中断 Exception (update database
             String message = StringUtil.getLimitLenghtByString(e.getMessage(), 1000);
             problemResult.setErrorMsg(message);
+
             recordService.updateProblemResultStatusById(problemResult.getProblemId(), JudgeStatusEnum.Runtime_Error.getStatus());
 
             log.info("执行脚本错误或闭锁终端, e = ", e);

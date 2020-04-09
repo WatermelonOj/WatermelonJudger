@@ -20,3 +20,5 @@ CREATE TABLE IF NOT EXISTS `problem`(
 
 INSERT INTO `problem` (`problem_id`, `tm_limit`, `mem_limit`) VALUES (100, 1000, 1000)
 INSERT INTO `problem` VALUES (1000, 'A + B Problem', '输入 $a$ 和 $b$，输出  的结果。', '一行两个正整数 $a$ 和 $b$。', '一行一个正整数 $a+b$。', '1 2', '3', null, false, null, true, 1000, 1000);
+
+
