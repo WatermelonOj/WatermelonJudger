@@ -1,6 +1,6 @@
 package cn.watermelon.watermelonjudge.dto;
 
-import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.util.Date;
@@ -17,7 +17,7 @@ public class TestResult {
 
     private Integer proReId;
 
-    private Integer num;
+    private String num;
 
     private String userOutput;
 
@@ -27,10 +27,10 @@ public class TestResult {
 
     private Integer status;
 
-    @JSONField(format="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     private Date createTime;
 
-    @JSONField(format="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     private Date updateTime;
 
 }

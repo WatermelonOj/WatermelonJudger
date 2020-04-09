@@ -18,8 +18,8 @@ public interface ProblemResultMapper {
             "where `problem_id` = #{problemId}"})
     @Results(value = {
             @Result(property = "problemId", column = "problem_id"),
-            @Result(property = "timeLimit", column = "time_limit"),
-            @Result(property = "memoryLimit", column = "memory_limit"),
+            @Result(property = "tmLimit", column = "tm_limit"),
+            @Result(property = "memLimit", column = "mem_limit"),
     })
     Problem getProblemById(Integer problemId);
 

@@ -49,49 +49,67 @@ public class SubmissionController {
     }
 
     @RequestMapping(value = "/all", method = RequestMethod.GET)
-    List<Submission> getSubmissions(int page, Integer pageSize) {
+    List<Submission> getSubmissions(Integer page, Integer pageSize) {
         if (pageSize == null) {
             pageSize = defaultPageSize;
+        }
+        if (page == null) {
+            page = 1;
         }
         return ConvertUtil.prs2Subs(recordService.getSubmissions(page, pageSize));
     }
 
     @RequestMapping(value = "/user", method = RequestMethod.GET)
-    List<Submission> getSubmissionsByUser(int userId, int page, Integer pageSize) {
+    List<Submission> getSubmissionsByUser(int userId, Integer page, Integer pageSize) {
         if (pageSize == null) {
             pageSize = defaultPageSize;
+        }
+        if (page == null) {
+            page = 1;
         }
         return ConvertUtil.prs2Subs(recordService.getSubmissionsByUser(userId, page, pageSize));
     }
 
     @RequestMapping(value = "/problem", method = RequestMethod.GET)
-    List<Submission> getSubmissionsByProblem(int problemId, int page, Integer pageSize) {
+    List<Submission> getSubmissionsByProblem(int problemId, Integer page, Integer pageSize) {
         if (pageSize == null) {
             pageSize = defaultPageSize;
+        }
+        if (page == null) {
+            page = 1;
         }
         return ConvertUtil.prs2Subs(recordService.getSubmissionsByProblem(problemId, page, pageSize));
     }
 
     @RequestMapping(value = "/contest", method = RequestMethod.GET)
-    List<Submission> getSubmissionsByContest(int contestId, int page, Integer pageSize) {
+    List<Submission> getSubmissionsByContest(int contestId, Integer page, Integer pageSize) {
         if (pageSize == null) {
             pageSize = defaultPageSize;
+        }
+        if (page == null) {
+            page = 1;
         }
         return ConvertUtil.prs2Subs(recordService.getSubmissionsByContest(contestId, page, pageSize));
     }
 
     @RequestMapping(value = "/status", method = RequestMethod.GET)
-    List<Submission> getSubmissionsByStatus(String status, int page, Integer pageSize) {
+    List<Submission> getSubmissionsByStatus(String status, Integer page, Integer pageSize) {
         if (pageSize == null) {
             pageSize = defaultPageSize;
+        }
+        if (page == null) {
+            page = 1;
         }
         return ConvertUtil.prs2Subs(recordService.getSubmissionsByStatus(status, page, pageSize));
     }
 
     @RequestMapping(value = "/language", method = RequestMethod.GET)
-    List<Submission> getSubmissionsByLanguage(String language, int page, Integer pageSize) {
+    List<Submission> getSubmissionsByLanguage(String language, Integer page, Integer pageSize) {
         if (pageSize == null) {
             pageSize = defaultPageSize;
+        }
+        if (page == null) {
+            page = 1;
         }
         return ConvertUtil.prs2Subs(recordService.getSubmissionsByLanguage(language, page, pageSize));
     }

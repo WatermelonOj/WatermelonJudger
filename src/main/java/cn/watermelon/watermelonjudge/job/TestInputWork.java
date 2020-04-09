@@ -5,6 +5,7 @@ import cn.watermelon.watermelonjudge.entity.Problem;
 import cn.watermelon.watermelonjudge.entity.ProblemResult;
 import cn.watermelon.watermelonjudge.enumeration.JudgeStatusEnum;
 import cn.watermelon.watermelonjudge.enumeration.LanguageEnum;
+import cn.watermelon.watermelonjudge.util.CmdUtil;
 import cn.watermelon.watermelonjudge.util.StreamUtil;
 import cn.watermelon.watermelonjudge.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,8 @@ import java.util.stream.Stream;
  */
 @Slf4j
 public class TestInputWork implements Runnable {
+
+    private final String envOs = CmdUtil.envOs;
 
     /**
      * 题目
@@ -64,15 +67,13 @@ public class TestInputWork implements Runnable {
 
     @Override
     public void run() {
-        if (problemResult.getResultMap() == null) {
-            problemResult.setResultMap(new ConcurrentSkipListMap<>());
-        }
 
-        Map<Integer, TestResult> resultMap = problemResult.getResultMap();
+
+        Map<String, TestResult> resultMap = problemResult.getResultMap();
         String inputFileName = inputFile.getName();
 
         // 样例编号
-        Integer testCaseNum = Integer.parseInt(inputFileName.substring(0, inputFileName.lastIndexOf(".")));
+        String testCaseNum = inputFileName.substring(0, inputFileName.lastIndexOf("."));
 
         // 测试样例输入
         OutputStream outputStream = process.getOutputStream();
@@ -94,13 +95,13 @@ public class TestInputWork implements Runnable {
             if (!problemResult.getLanguage().equals(LanguageEnum.C.getType()) && !problemResult.getLanguage().equals(LanguageEnum.CPP.getType())) {
                 base = 2;
             }
-            System.out.println(problem);
             testResult = task.get(problem.getTimeLimit() * base + 200, TimeUnit.MILLISECONDS);
             if (!JudgeStatusEnum.Runtime_Error.getStatus().equals(testResult.getStatus())) {
-                File outputFile = new File(outputFileDirPath + "\\" + inputFileName);
+                File outputFile = new File(outputFileDirPath + envOs + inputFileName);
                 checkAnswer(problem, outputFile, testResult, base);
             }
             resultMap.put(testCaseNum, testResult);
+//            System.out.println("Case num: " + testCaseNum);
         } catch (TimeoutException e) {
             log.info("judge is tle");
             process.destroyForcibly();
@@ -142,15 +143,20 @@ public class TestInputWork implements Runnable {
             answerOutput = StringUtil.rTrim(answerOutput);
             userOutput = StringUtil.rTrim(userOutput);
 
+//            System.out.println("ans:  " + answerOutput + "\n" + "user: " + userOutput);
+
             if (answerOutput.equals(userOutput)) {
                 // AC
+//                System.out.println("judge AC");
                 testResult.setStatus(JudgeStatusEnum.Accept.getStatus());
             } else {
                 if (StringUtil.formatString(answerOutput).equals(StringUtil.formatString(userOutput))) {
                     // PE
+//                    System.out.println("judge PE");
                     testResult.setStatus(JudgeStatusEnum.Presentation_Error.getStatus());
                 } else {
                     // WA
+//                    System.out.println("judge WA");
                     testResult.setStatus(JudgeStatusEnum.Wrong_Answer.getStatus());
                 }
             }

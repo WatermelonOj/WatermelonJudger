@@ -38,28 +38,35 @@ public class StreamUtil {
 
     public static String setInput(OutputStream outputStream, String inputFilePath) {
         StringBuilder result = new StringBuilder();
-        BufferedOutputStream bufferedOutputStream = null;
-        FileInputStream fileInputStream = null;
         try {
-            bufferedOutputStream = new BufferedOutputStream(outputStream);
-            fileInputStream = new FileInputStream(inputFilePath);
-            byte[] buffer = new byte[1024];
-            int length = 0;
-            while ((length = fileInputStream.read(buffer)) != -1) {
-                result.append(new String(buffer, 0, length));
-                bufferedOutputStream.write(buffer, 0, length);
-                bufferedOutputStream.flush();
+            BufferedReader in = new BufferedReader(new FileReader(inputFilePath));
+            String str;
+            while ((str = in.readLine()) != null) {
+                result.append(str);
             }
+            System.out.println(result.toString());
+//        BufferedOutputStream bufferedOutputStream = null;
+//        FileInputStream fileInputStream = null;
+//        try {
+//            bufferedOutputStream = new BufferedOutputStream(outputStream);
+//            fileInputStream = new FileInputStream(inputFilePath);
+//            byte[] buffer = new byte[1024];
+//            int length = 0;
+//            while ((length = fileInputStream.read(buffer)) != -1) {
+//                result.append(new String(buffer, 0, length));
+//                bufferedOutputStream.write(buffer, 0, length);
+//                bufferedOutputStream.flush();
+//            }
         } catch (IOException e) {
             log.info("whene output writing, e = ", e.getMessage());
         } finally {
             try {
-                if (fileInputStream != null) {
-                    fileInputStream.close();
-                }
-                if (bufferedOutputStream != null) {
-                    bufferedOutputStream.close();
-                }
+//                if (fileInputStream != null) {
+//                    fileInputStream.close();
+//                }
+//                if (bufferedOutputStream != null) {
+//                    bufferedOutputStream.close();
+//                }
             } catch (IOException e) {
                 log.info("when close output stream, e = ", e.getMessage());
             }

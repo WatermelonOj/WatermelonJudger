@@ -41,6 +41,6 @@ public class ProblemResult implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     private Date subTime;
 
-    private ConcurrentSkipListMap<Integer, TestResult> resultMap = new ConcurrentSkipListMap<>();
+    private ConcurrentSkipListMap<String, TestResult> resultMap = new ConcurrentSkipListMap<>();
 
 }

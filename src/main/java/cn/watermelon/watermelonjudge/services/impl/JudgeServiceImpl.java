@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -33,9 +34,10 @@ import java.util.concurrent.Executors;
 @Service
 public class JudgeServiceImpl implements JudgeService {
 
-    private static final String envOs = "/";
+    private static final String envOs = CmdUtil.envOs;
 
-    @Value("/problem")
+    @Value("/home/admin/problem")
+//    @Value("C:\\Users\\74798\\Desktop\\problem")
     private String fileServerTestcaseDir;
 
     private static Runtime runtime = Runtime.getRuntime();
@@ -103,6 +105,8 @@ public class JudgeServiceImpl implements JudgeService {
         String outputFileDirPath = problemDirPath + envOs + "output";
 
         Problem problem = recordService.getProblemById(problemResult.getProblemId());
+        problem.setTimeLimit(Long.parseLong(problem.getTmLimit()) * 1000L);
+        problem.setMemoryLimit(Long.parseLong(problem.getMemLimit()) * 1024L);
 
         try {
             // 执行输入和输出
@@ -110,7 +114,12 @@ public class JudgeServiceImpl implements JudgeService {
             File[] inputFiles = inputFileDir.listFiles();
 
             // 并发
-            if (inputFiles.length > 0) {
+            if (inputFiles != null) {
+//                System.out.println(inputFileDirPath);
+
+                if (problemResult.getResultMap() == null) {
+                    problemResult.setResultMap(new ConcurrentSkipListMap<>());
+                }
                 CountDownLatch countDownLatch = new CountDownLatch(inputFiles.length);
                 ExecutorService executorService = Executors.newFixedThreadPool(inputFiles.length);
 
@@ -132,10 +141,11 @@ public class JudgeServiceImpl implements JudgeService {
             Integer status = null;
             Integer acCount = 0;
             List<TestResult> testResultList = new ArrayList<>();
-            Set<Map.Entry<Integer, TestResult>> entrySet = problemResult.getResultMap().entrySet();
+            Set<Map.Entry<String, TestResult>> entrySet = problemResult.getResultMap().entrySet();
 
-            for (Map.Entry<Integer, TestResult> entry : entrySet) {
+            for (Map.Entry<String, TestResult> entry : entrySet) {
                 TestResult testResult = entry.getValue();
+                System.out.println(testResult);
 
                 if (testResult.getTime() > maxTime) {
                     maxTime = testResult.getTime();
@@ -148,7 +158,6 @@ public class JudgeServiceImpl implements JudgeService {
                 if (JudgeStatusEnum.Accept.getStatus().equals(testResult.getStatus())) {
                     // AC
                     ++acCount;
-                    testResultList.add(testResult);
                 } else {
                     if (testResult.getMemory() != null && testResult.getMemory() > maxMemory) {
                         maxMemory = testResult.getMemory();
@@ -172,10 +181,12 @@ public class JudgeServiceImpl implements JudgeService {
                         // MLE
                         status = JudgeStatusEnum.Memory_Limit_Exceeded.getStatus();
                     }
-                    break;
                 }
+                testResultList.add(testResult);
             }
 
+//            System.out.println("AC_count " + acCount);
+//            System.out.println("test size " + testResultList.size());
             // AC condition
             if (acCount == testResultList.size()) {
                 status = JudgeStatusEnum.Accept.getStatus();

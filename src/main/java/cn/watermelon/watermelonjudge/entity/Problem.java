@@ -15,6 +15,10 @@ public class Problem {
      */
     private Integer problemId;
 
+    private String tmLimit;
+
+    private String memLimit;
+
     /**
      * 时间限制
      */

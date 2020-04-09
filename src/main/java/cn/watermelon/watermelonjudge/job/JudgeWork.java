@@ -2,9 +2,7 @@ package cn.watermelon.watermelonjudge.job;
 
 import cn.watermelon.watermelonjudge.dto.Submission;
 import cn.watermelon.watermelonjudge.entity.ProblemResult;
-import cn.watermelon.watermelonjudge.enumeration.JudgeStatusEnum;
 import cn.watermelon.watermelonjudge.services.JudgeService;
-import cn.watermelon.watermelonjudge.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

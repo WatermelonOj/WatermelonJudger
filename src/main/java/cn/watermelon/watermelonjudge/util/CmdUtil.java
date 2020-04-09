@@ -9,7 +9,7 @@ import cn.watermelon.watermelonjudge.enumeration.LanguageEnum;
  */
 public class CmdUtil {
 
-    private static final String env = "/";
+    public static final String envOs = "/";
 
     /**
      * 获取编译脚本命令
@@ -27,15 +27,15 @@ public class CmdUtil {
             }
         } else if (LanguageEnum.C.getType().equals(type)) {
             if (dir != null && !"".equals(dir)) {
-                return "gcc " + dir + "/Main.c -o " + dir + "/C.out";
+                return "gcc -std=99 -O2 " + dir + "/Main.c -o " + dir + "/C.out";
             } else {
-                return "gcc Main.c -o C.out";
+                return "gcc -std=99 -O2 Main.c -o C.out";
             }
         } else if (LanguageEnum.CPP.getType().equals(type)) {
             if (dir != null && !"".equals(dir)) {
-                return "g++ " + dir + env + "Main.cpp -o " + dir + env + "C++.out";
+                return "g++ -std=c++11 -O2 " + dir + envOs + "Main.cpp -o " + dir + envOs + "C++.out";
             } else {
-                return "g++ Main.cpp -o C++.out";
+                return "g++ -std=c++11 -O2 Main.cpp -o C++.out";
             }
         } else {
             return null;
@@ -66,7 +66,7 @@ public class CmdUtil {
             }
         } else if (LanguageEnum.CPP.getType().equals(type)) {
             if (dir != null && !"".equals(dir)) {
-                builder = new ProcessBuilder(dir + env + "C++.out");
+                builder = new ProcessBuilder(dir + envOs + "C++.out");
             } else {
                 builder = new ProcessBuilder("C++.out");
             }
