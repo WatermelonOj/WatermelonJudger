@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -79,6 +80,25 @@ public class JudgeServiceImpl implements JudgeService {
         }
 
         if (compileErrorOutput == null || "".equals(compileErrorOutput) || cmd != null) {
+            try {
+                String execPath = userDirPath + envOs;
+                if (LanguageEnum.Java8.getType().equals(problemResult.getLanguage())) {
+                    execPath += "Main.java";
+                } else if (LanguageEnum.C.getType().equals(problemResult.getLanguage())){
+                    execPath += "C.out";
+                } else if (LanguageEnum.CPP.getType().equals(problemResult.getLanguage())){
+                    execPath += "C++.out";
+                }
+                File outExecFile = new File(execPath);
+                if (!outExecFile.exists()) {
+                    throw new FileNotFoundException();
+                }
+            } catch (Exception e) {
+                problemResult.setStatus(JudgeStatusEnum.Compile_Error.getStatus());
+                recordService.updateProblemResultStatusById(problemResult.getSubId(), problemResult.getStatus());
+                userDirPath = null;
+            }
+            problemResult.setErrorMsg(compileErrorOutput);
             return userDirPath;
         } else {
             // update compile error
@@ -212,6 +232,5 @@ public class JudgeServiceImpl implements JudgeService {
         } finally {
             FileUtil.deleteFile(userDirPath);
         }
-
     }
 }
