@@ -169,12 +169,23 @@ public class JudgeServiceImpl implements JudgeService {
             for (Map.Entry<String, TestResult> entry : entrySet) {
                 TestResult testResult = entry.getValue();
 //                System.out.println(testResult);
+                testResultList.add(testResult);
+
+                if (testResult.getTime() == null) {
+                    status = JudgeStatusEnum.Time_Limit_Exceeded.getStatus();
+                    continue;
+                }
+
+                if (testResult.getMemory() == null) {
+                    status = JudgeStatusEnum.Memory_Limit_Exceeded.getStatus();
+                    continue;
+                }
 
                 if (testResult.getTime() > maxTime) {
                     maxTime = testResult.getTime();
                 }
 
-                if (testResult.getMemory() > maxMemory) {
+                if (testResult.getMemory() != null&& testResult.getMemory() > maxMemory) {
                     maxMemory = testResult.getMemory();
                 }
 
@@ -205,7 +216,6 @@ public class JudgeServiceImpl implements JudgeService {
                         status = JudgeStatusEnum.Memory_Limit_Exceeded.getStatus();
                     }
                 }
-                testResultList.add(testResult);
             }
 
 //            System.out.println("AC_count " + acCount);

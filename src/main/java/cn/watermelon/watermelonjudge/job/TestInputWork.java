@@ -89,33 +89,37 @@ public class TestInputWork implements Runnable {
         FutureTask<TestResult> task = new FutureTask<>(new TestOutputWork(process, testResult));
         new Thread(task).start();
 
+        int base = 1;
         try {
             // 计算时间， 等待题目时限 + 200 ms
-            int base = 1;
             if (!problemResult.getLanguage().equals(LanguageEnum.C.getType()) && !problemResult.getLanguage().equals(LanguageEnum.CPP.getType())) {
                 base = 2;
             }
-            testResult = task.get(problem.getTimeLimit() * base + 200, TimeUnit.MILLISECONDS);
+            testResult = task.get(problem.getTimeLimit() * base + 500, TimeUnit.MILLISECONDS);
             if (!JudgeStatusEnum.Runtime_Error.getStatus().equals(testResult.getStatus())) {
                 File outputFile = new File(outputFileDirPath + envOs + inputFileName);
                 checkAnswer(problem, outputFile, testResult, base);
             }
-            resultMap.put(testCaseNum, testResult);
 //            System.out.println("Case num: " + testCaseNum);
         } catch (TimeoutException e) {
             log.info("judge is tle");
             process.destroyForcibly();
             // TLE
             testResult.setStatus(JudgeStatusEnum.Time_Limit_Exceeded.getStatus());
-            resultMap.put(testCaseNum, testResult);
         } catch (Exception e) {
             e.printStackTrace();
             log.info("judge is re");
 
             // RE
             testResult.setStatus(JudgeStatusEnum.Runtime_Error.getStatus());
-            resultMap.put(testCaseNum, testResult);
         } finally {
+            if (testResult.getTime() == null) {
+                testResult.setTime(problem.getTimeLimit() * base + 10L);
+            }
+            if (testResult.getMemory() == null) {
+                testResult.setMemory(problem.getMemoryLimit() + 10L);
+            }
+            resultMap.put(testCaseNum, testResult);
             Stream<ProcessHandle> descendants = process.descendants();
             descendants.forEach(ProcessHandle::destroyForcibly);
             countDownLatch.countDown();

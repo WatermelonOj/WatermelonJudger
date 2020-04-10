@@ -79,7 +79,7 @@ public class Submission {
         this.userId = problemResult.getUserId();
         this.subTime = problemResult.getSubTime();
         this.runTime = problemResult.getRunTime();
-        this.runMemory = problemResult.getRunMemory() / 1024L;
+        this.runMemory = problemResult.getRunMemory();
         this.code = problemResult.getSourceCode();
         this.msg = problemResult.getErrorMsg();
         this.result = JudgeStatusEnum.getStatusEnum(problemResult.getStatus());
