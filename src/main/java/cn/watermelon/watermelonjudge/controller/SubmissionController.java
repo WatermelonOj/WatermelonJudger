@@ -27,6 +27,7 @@ public class SubmissionController {
     @Autowired
     private RecordService recordService;
 
+
     @RequestMapping(value = "/submit", method = RequestMethod.POST)
     Submission insertSubmission(Integer pid, Integer uid, String language, String code) {
         ProblemResult problemResult = new ProblemResult();
@@ -38,6 +39,11 @@ public class SubmissionController {
         problemResult.setSourceCode(code);
 
         return judgeWork.judge(problemResult);
+    }
+
+    @RequestMapping(value = "/rejudge", method = RequestMethod.PATCH)
+    void rejudgeProblem(Integer problemId) {
+        judgeWork.rejudge(problemId);
     }
 
     @RequestMapping(value = "/count", method = RequestMethod.GET)
