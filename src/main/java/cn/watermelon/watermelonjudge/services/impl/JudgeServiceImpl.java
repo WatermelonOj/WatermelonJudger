@@ -52,7 +52,7 @@ public class JudgeServiceImpl implements JudgeService {
      * @return 用户代码保存目录
      */
     @Override
-    public String compile(ProblemResult problemResult) {
+    public String compile(ProblemResult problemResult, Boolean rejudge) {
         String problemDirpath = fileServerTestcaseDir + envOs + problemResult.getProblemId();
         String userDirPath = problemDirpath + envOs + "submission" + envOs + UUIDUtil.createByTime();
         LanguageEnum languageEnum = LanguageEnum.getEnumByType(problemResult.getLanguage());
@@ -61,9 +61,11 @@ public class JudgeServiceImpl implements JudgeService {
 
         String compileErrorOutput = null;
 
-        problemResult.setStatus(JudgeStatusEnum.Compiling.getStatus());
-        int subId = recordService.insertProblemRusult(problemResult);
-        problemResult.setSubId(subId);
+        if (!rejudge) {
+            problemResult.setStatus(JudgeStatusEnum.Compiling.getStatus());
+            int subId = recordService.insertProblemRusult(problemResult);
+            problemResult.setSubId(subId);
+        }
 
         String cmd = null;
         if (languageEnum.isRequiredCompile()) {

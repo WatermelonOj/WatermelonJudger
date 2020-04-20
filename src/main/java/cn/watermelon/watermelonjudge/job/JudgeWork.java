@@ -26,10 +26,10 @@ public class JudgeWork {
     @Autowired
     private RejudgeService rejudgeService;
 
-    public Submission judge(ProblemResult problemResult) {
+    public Submission judge(ProblemResult problemResult, Boolean rejudge) {
 
         // 编译
-        String userDirPath = judgeService.compile(problemResult);
+        String userDirPath = judgeService.compile(problemResult, rejudge);
 
         // 运行
         if (userDirPath != null) {
@@ -46,7 +46,7 @@ public class JudgeWork {
         List<ProblemResult> problemResults = rejudgeService.getRecordByProblemId(problemId);
 
         for (ProblemResult problemResult: problemResults) {
-            judge(problemResult);
+            judge(problemResult, true);
         }
 
     }

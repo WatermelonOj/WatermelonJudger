@@ -38,7 +38,7 @@ public class SubmissionController {
         problemResult.setLanguage(language);
         problemResult.setSourceCode(code);
 
-        return judgeWork.judge(problemResult);
+        return judgeWork.judge(problemResult, false);
     }
 
     @RequestMapping(value = "/rejudge", method = RequestMethod.PATCH)

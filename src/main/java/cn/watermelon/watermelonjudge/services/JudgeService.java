@@ -16,7 +16,7 @@ public interface JudgeService {
      * @param problemResult
      * @return
      */
-    String compile(ProblemResult problemResult);
+    String compile(ProblemResult problemResult, Boolean rejudge);
 
     /**
      * 执行

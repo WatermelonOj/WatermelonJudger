@@ -1,9 +1,7 @@
 package cn.watermelon.watermelonjudge.mapper;
 
 import cn.watermelon.watermelonjudge.entity.ProblemResult;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -19,6 +17,11 @@ public interface RejudgeMapper {
     @Select({"SELECT *",
             "FROM `submissions`",
             "WHERE `problem_id` = #{problemId}"
+    })
+    @Results(value = {
+            @Result(property = "status", column = "result"),
+            @Result(property = "sourceCode", column = "code"),
+            @Result(property = "language", column = "language"),
     })
     List<ProblemResult> getProblemResultByPID(int problemId);
 }
