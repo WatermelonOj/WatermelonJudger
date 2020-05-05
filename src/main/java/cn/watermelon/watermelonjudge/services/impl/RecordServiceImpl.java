@@ -1,10 +1,12 @@
 package cn.watermelon.watermelonjudge.services.impl;
 
+import cn.watermelon.watermelonjudge.dto.Submission;
 import cn.watermelon.watermelonjudge.entity.Problem;
 import cn.watermelon.watermelonjudge.entity.ProblemResult;
 import cn.watermelon.watermelonjudge.enumeration.JudgeStatusEnum;
 import cn.watermelon.watermelonjudge.mapper.ProblemResultMapper;
 import cn.watermelon.watermelonjudge.services.RecordService;
+import cn.watermelon.watermelonjudge.util.ConvertUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -59,31 +61,36 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
-    public List<ProblemResult> getSubmissions(int page, int pageSize) {
+    public List<Submission> getSubmissions(int page, int pageSize) {
         int begin = (page - 1) * pageSize;
-        return problemResultMapper.getSubmissions(begin, pageSize);
+        return ConvertUtil.prs2Subs(problemResultMapper.getSubmissions(begin, pageSize), problemResultMapper);
     }
 
     @Override
-    public List<ProblemResult> getSubmissionsByUser(int userId, int page, int pageSize) {
+    public List<Submission> getSubmissionsByUser(int userId, int page, int pageSize) {
         int begin = (page - 1) * pageSize;
-        return problemResultMapper.getSubmissionsByUser(userId, begin, pageSize);
+        return ConvertUtil.prs2Subs(problemResultMapper.getSubmissionsByUser(userId, begin, pageSize), problemResultMapper);
     }
 
     @Override
-    public List<ProblemResult> getSubmissionsByProblem(int problemId, int page, int pageSize) {
+    public List<Submission> getSubmissionsByProblem(int problemId, int page, int pageSize) {
         int begin = (page - 1) * pageSize;
-        return problemResultMapper.getSubmissionsByProblem(problemId, begin, pageSize);
+        return ConvertUtil.prs2Subs(problemResultMapper.getSubmissionsByProblem(problemId, begin, pageSize), problemResultMapper);
     }
 
     @Override
-    public List<ProblemResult> getSubmissionsByContest(int contestId, int page, int pageSize) {
-        int begin = (page - 1) * pageSize;
-        return problemResultMapper.getSubmissionsByContest(contestId, begin, pageSize);
+    public List<Submission> getSubmissionsByContest(int contestId) {
+        return ConvertUtil.prs2Subs(problemResultMapper.getSubmissionsByContestId(contestId), problemResultMapper);
     }
 
     @Override
-    public List<ProblemResult> getSubmissionsByStatus(String qstatus, int page, int pageSize) {
+    public List<Submission> getSubmissionsByContest(int contestId, int page, int pageSize) {
+        int begin = (page - 1) * pageSize;
+        return ConvertUtil.prs2Subs(problemResultMapper.getSubmissionsByContest(contestId, begin, pageSize), problemResultMapper);
+    }
+
+    @Override
+    public List<Submission> getSubmissionsByStatus(String qstatus, int page, int pageSize) {
         int begin = (page - 1) * pageSize;
         int status = 0;
         JudgeStatusEnum[] judgeStatusEnums = JudgeStatusEnum.values();
@@ -93,13 +100,13 @@ public class RecordServiceImpl implements RecordService {
                 break;
             }
         }
-        return problemResultMapper.getSubmissionsByStatus(status, begin, pageSize);
+        return ConvertUtil.prs2Subs(problemResultMapper.getSubmissionsByStatus(status, begin, pageSize), problemResultMapper);
     }
 
     @Override
-    public List<ProblemResult> getSubmissionsByLanguage(String language, int page, int pageSize) {
+    public List<Submission> getSubmissionsByLanguage(String language, int page, int pageSize) {
         int begin = (page - 1) * pageSize;
-        return problemResultMapper.getSubmissionsByLanguage(language, begin, pageSize);
+        return ConvertUtil.prs2Subs(problemResultMapper.getSubmissionsByLanguage(language, begin, pageSize), problemResultMapper);
     }
 
 }

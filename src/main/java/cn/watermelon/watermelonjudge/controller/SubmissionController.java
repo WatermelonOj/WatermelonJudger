@@ -1,10 +1,11 @@
 package cn.watermelon.watermelonjudge.controller;
 
+import cn.watermelon.watermelonjudge.dto.Rank;
 import cn.watermelon.watermelonjudge.dto.Submission;
 import cn.watermelon.watermelonjudge.entity.ProblemResult;
 import cn.watermelon.watermelonjudge.job.JudgeWork;
+import cn.watermelon.watermelonjudge.job.RankCalc;
 import cn.watermelon.watermelonjudge.services.RecordService;
-import cn.watermelon.watermelonjudge.util.ConvertUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +28,8 @@ public class SubmissionController {
     @Autowired
     private RecordService recordService;
 
+    @Autowired
+    private RankCalc rankCalc;
 
     @RequestMapping(value = "/submit", method = RequestMethod.POST)
     Submission insertSubmission(Integer pid, Integer uid, String language, String code, Integer contestId) {
@@ -63,7 +66,7 @@ public class SubmissionController {
         if (page == null) {
             page = 1;
         }
-        return ConvertUtil.prs2Subs(recordService.getSubmissions(page, pageSize));
+        return recordService.getSubmissions(page, pageSize);
     }
 
     @RequestMapping(value = "/user", method = RequestMethod.GET)
@@ -74,7 +77,7 @@ public class SubmissionController {
         if (page == null) {
             page = 1;
         }
-        return ConvertUtil.prs2Subs(recordService.getSubmissionsByUser(userId, page, pageSize));
+        return recordService.getSubmissionsByUser(userId, page, pageSize);
     }
 
     @RequestMapping(value = "/problem", method = RequestMethod.GET)
@@ -85,7 +88,12 @@ public class SubmissionController {
         if (page == null) {
             page = 1;
         }
-        return ConvertUtil.prs2Subs(recordService.getSubmissionsByProblem(problemId, page, pageSize));
+        return recordService.getSubmissionsByProblem(problemId, page, pageSize);
+    }
+
+    @RequestMapping(value = "/rank", method = RequestMethod.GET)
+    List<Rank> getContestRank(int contestId){
+        return rankCalc.getRankList(contestId);
     }
 
     @RequestMapping(value = "/contest", method = RequestMethod.GET)
@@ -96,7 +104,7 @@ public class SubmissionController {
         if (page == null) {
             page = 1;
         }
-        return ConvertUtil.prs2Subs(recordService.getSubmissionsByContest(contestId, page, pageSize));
+        return recordService.getSubmissionsByContest(contestId, page, pageSize);
     }
 
     @RequestMapping(value = "/status", method = RequestMethod.GET)
@@ -107,7 +115,7 @@ public class SubmissionController {
         if (page == null) {
             page = 1;
         }
-        return ConvertUtil.prs2Subs(recordService.getSubmissionsByStatus(status, page, pageSize));
+        return recordService.getSubmissionsByStatus(status, page, pageSize);
     }
 
     @RequestMapping(value = "/language", method = RequestMethod.GET)
@@ -118,7 +126,7 @@ public class SubmissionController {
         if (page == null) {
             page = 1;
         }
-        return ConvertUtil.prs2Subs(recordService.getSubmissionsByLanguage(language, page, pageSize));
+        return recordService.getSubmissionsByLanguage(language, page, pageSize);
     }
 
 }

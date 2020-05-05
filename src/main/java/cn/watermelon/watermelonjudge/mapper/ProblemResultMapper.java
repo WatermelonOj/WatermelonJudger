@@ -4,6 +4,7 @@ import cn.watermelon.watermelonjudge.entity.Problem;
 import cn.watermelon.watermelonjudge.entity.ProblemResult;
 import org.apache.ibatis.annotations.*;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,6 +23,18 @@ public interface ProblemResultMapper {
             @Result(property = "memLimit", column = "mem_limit"),
     })
     Problem getProblemById(Integer problemId);
+
+    @Select({"SELECT `username`",
+            "FROM `user`",
+            "WHERE `user_id` = #{userId}",
+    })
+    String getUsername(int userId);
+
+    @Select({"SELECT `start_time`",
+            "FROM `contest`",
+            "WHERE `contest_id` = #{contestId}",
+    })
+    Date getContestStartTime(int contestId);
 
     @Select({"SELECT *",
             "FROM `submissions`",
@@ -54,6 +67,18 @@ public interface ProblemResultMapper {
             @Result(property = "language", column = "language"),
     })
     List<ProblemResult> getSubmissionsByUser(int userId, int begin, int pageSize);
+
+    @Select({"SELECT *",
+            "FROM `submissions`",
+            "WHERE `is_delete` = false && `contest_id` = #{contestId}",
+            "ORDER BY `sub_time` ASC",
+    })
+    @Results(value = {
+            @Result(property = "status", column = "result"),
+            @Result(property = "sourceCode", column = "code"),
+            @Result(property = "language", column = "language"),
+    })
+    List<ProblemResult> getSubmissionsByContestId(int contestId);
 
     @Select({"SELECT *",
             "FROM `submissions`",

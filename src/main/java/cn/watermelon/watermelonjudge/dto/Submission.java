@@ -72,6 +72,8 @@ public class Submission {
      */
     private LanguageEnum language;
 
+    private String username;
+
     public Submission(ProblemResult problemResult) {
         this.subId = problemResult.getSubId();
         this.problemId = problemResult.getProblemId();
