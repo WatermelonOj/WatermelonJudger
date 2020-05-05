@@ -19,11 +19,11 @@ public interface RecordService {
 
     void updateProblemResult(ProblemResult problemResult);
 
-     Integer insertProblemRusult(ProblemResult problemResult);
+    Integer insertProblemRusult(ProblemResult problemResult);
 
-     int getSubmissionsNum(int pageSize);
+    int getSubmissionsNum(int pageSize);
 
-     List<ProblemResult> getSubmissions(int page, int pageSize);
+    List<ProblemResult> getSubmissions(int page, int pageSize);
 
     List<ProblemResult> getSubmissionsByUser(int userId, int page, int pageSize);
 

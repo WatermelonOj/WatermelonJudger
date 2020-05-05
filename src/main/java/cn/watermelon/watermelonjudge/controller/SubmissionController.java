@@ -29,10 +29,11 @@ public class SubmissionController {
 
 
     @RequestMapping(value = "/submit", method = RequestMethod.POST)
-    Submission insertSubmission(Integer pid, Integer uid, String language, String code) {
+    Submission insertSubmission(Integer pid, Integer uid, String language, String code, Integer contestId) {
+
         ProblemResult problemResult = new ProblemResult();
         problemResult.setSubTime(new Date());
-
+        problemResult.setContestId(contestId);
         problemResult.setUserId(uid);
         problemResult.setProblemId(pid);
         problemResult.setLanguage(language);
