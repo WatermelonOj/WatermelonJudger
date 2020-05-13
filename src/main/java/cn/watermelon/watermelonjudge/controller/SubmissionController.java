@@ -6,6 +6,7 @@ import cn.watermelon.watermelonjudge.entity.ProblemResult;
 import cn.watermelon.watermelonjudge.job.JudgeWork;
 import cn.watermelon.watermelonjudge.job.RankCalc;
 import cn.watermelon.watermelonjudge.services.RecordService;
+import cn.watermelon.watermelonjudge.services.SubService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +31,9 @@ public class SubmissionController {
 
     @Autowired
     private RankCalc rankCalc;
+
+    @Autowired
+    private SubService subService;
 
     @RequestMapping(value = "/submit", method = RequestMethod.POST)
     Submission insertSubmission(Integer pid, Integer uid, String language, String code, Integer contestId) {
@@ -127,6 +131,11 @@ public class SubmissionController {
             page = 1;
         }
         return recordService.getSubmissionsByLanguage(language, page, pageSize);
+    }
+
+    @RequestMapping(value = "/good", method = RequestMethod.GET)
+    List<Submission> getGoodSubmission(int problemId) {
+        return subService.getGoodPr(problemId);
     }
 
 }
