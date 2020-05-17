@@ -36,7 +36,13 @@ public class JudgeWork {
             judgeService.execute(problemResult, userDirPath);
         }
 
-        return new Submission(problemResult);
+        Submission submission = new Submission(problemResult);
+        if (rejudge != true) {
+
+        } else {
+
+        }
+        return submission;
     }
 
     public void rejudge(Integer problemId) {
