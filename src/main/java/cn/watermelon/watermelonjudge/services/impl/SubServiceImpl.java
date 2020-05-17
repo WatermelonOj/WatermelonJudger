@@ -55,31 +55,45 @@ public class SubServiceImpl implements SubService {
     @Override
     public List<UserAbilitiy> getUserAbility(int userId) {
         List<UserAbilitiy> userAbilitiys = new ArrayList<>();
-        ProblemTag[] problemTags = ProblemTag.values();
-        for (ProblemTag problemTag: problemTags) {
-            String tag = problemTag.getDesc();
-            TagSort tagSort = TagSort.getTagSort(problemTag.getType());
+        TagSort[] tagSorts = TagSort.values();
+        for (TagSort tagSort: tagSorts) {
             String desc = tagSort.getDesc();
             int type = tagSort.getType();
-            List<ProblemResult> problemResultList = utilMapper.getUserAbility(userId, tag);
-            if (problemTag.getType() == -1) {
-                problemResultList.addAll(utilMapper.getUserAbility(userId, null));
-            }
             UserAbilitiy userAbilitiy = new UserAbilitiy();
             userAbilitiy.setUserId(userId);
             userAbilitiy.setAbility(desc);
             userAbilitiy.setType(type);
+            userAbilitiy.setNum(0);
+            userAbilitiys.add(userAbilitiy);
+        }
 
-            int all = problemResultMapper.getAllSubmissionsByUser(userId).size();
-            int now = problemResultList.size();
+        List<ProblemResult> problemResultList = problemResultMapper.getAllAcSubmissionsByUser(userId);
 
-            int level = (int) Math.sqrt(Math.sqrt(now / all) * 6 + 1);
+        int all = problemResultList.size();
+        for (ProblemResult problemResult: problemResultList) {
+            int problemId = problemResult.getProblemId();
+            List<String> tags = utilMapper.getProblemTag(problemId);
+            if (tags == null || tags.size() == 0) {
+                tags.add(ProblemTag.SiWei.getDesc());
+            }
+            for (String tag: tags) {
+                ProblemTag problemTag = ProblemTag.getProblemTag(tag);
+//                UserAbilitiy userAbilitiy =
+                        userAbilitiys.get(problemTag.getType() + 1).addOne();
+//                userAbilitiy.setNum(userAbilitiy.getNum() + 1);
+            }
+        }
+
+        for (UserAbilitiy userAbilitiy: userAbilitiys) {
+            int now = userAbilitiy.getNum();
+
+            int level = (int) Math.sqrt(Math.sqrt(now / all)) * 6;
             if (level > 6) level = 6;
             if (level <= 0) level = 0;
 
             userAbilitiy.setLevel(level);
-            userAbilitiys.add(userAbilitiy);
         }
+
         return userAbilitiys;
     }
 
@@ -115,7 +129,7 @@ public class SubServiceImpl implements SubService {
     public List<ProblemDTO> getUserProblem(int userId) {
         List<UserAbilitiy> userAbilitiys = getUserAbility(userId);
         List<ProblemDTO> problemDTOS = new ArrayList<>();
-        if (userAbilitiys == null || problemResultMapper.getAllSubmissionsByUser(userId).size() < 5) {
+        if (problemResultMapper.getAllSubmissionsByUser(userId).size() < 5) {
             problemDTOS.addAll(utilMapper.getProblems());
         } else {
             userAbilitiys.sort(new Comparator<UserAbilitiy>() {
@@ -135,6 +149,9 @@ public class SubServiceImpl implements SubService {
                 for (ProblemTag problemTag: problemTags) {
                     if (tag == problemTag.getType()) {
                         List<ProblemDTO> list = getProblemByTag(problemTag.getDesc());
+                        if (list.size() == 0 && tag == -1) {
+                            list.addAll(utilMapper.getProblems());
+                        }
                         for (ProblemDTO problemDTO: list) {
                             if (problemDTOS.contains(problemDTO)) continue;
                             problemDTOS.add(problemDTO);

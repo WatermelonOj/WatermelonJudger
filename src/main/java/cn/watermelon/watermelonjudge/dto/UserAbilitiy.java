@@ -9,8 +9,14 @@ public class UserAbilitiy {
 
     int type;
 
+    int num;
+
     String ability;
 
     int level;
+
+    public void addOne() {
+        this.num = this.num + 1;
+    }
 
 }

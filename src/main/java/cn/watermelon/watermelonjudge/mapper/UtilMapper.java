@@ -46,16 +46,12 @@ public interface UtilMapper {
     })
     List<ProblemResult> getUserStatusNumber(int userId, int status);
 
-    @Select({"SELECT COUNT(*)",
-            "FROM `submissions`",
-            "WHERE `user_id` = #{userId} AND `tag` = #{tag} AND `is_delete` = false",
+    @Select({"SELECT `tag`",
+            "FROM `problem_with_tag`",
+            "WHERE `problem_id` = #{problemId} ",
     })
-    @Results(value = {
-            @Result(property = "status", column = "result"),
-            @Result(property = "sourceCode", column = "code"),
-            @Result(property = "language", column = "language"),
-    })
-    List<ProblemResult> getUserAbility(int userId, String tag);
+    List<String> getProblemTag(int problemId);
+
 
     @Select({"SELECT *",
             "FROM `problem`",

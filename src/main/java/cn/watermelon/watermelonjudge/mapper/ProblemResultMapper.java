@@ -82,6 +82,18 @@ public interface ProblemResultMapper {
 
     @Select({"SELECT *",
             "FROM `submissions`",
+            "WHERE `is_delete` = false AND `user_id` = #{userId} AND `result` = 1",
+            "ORDER BY `sub_time` DESC",
+    })
+    @Results(value = {
+            @Result(property = "status", column = "result"),
+            @Result(property = "sourceCode", column = "code"),
+            @Result(property = "language", column = "language"),
+    })
+    List<ProblemResult> getAllAcSubmissionsByUser(int userId);
+
+    @Select({"SELECT *",
+            "FROM `submissions`",
             "WHERE `is_delete` = false && `contest_id` = #{contestId}",
             "ORDER BY `sub_time` ASC",
     })
