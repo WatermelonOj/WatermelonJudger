@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.Date;
 import java.util.List;
 
 @Mapper
@@ -111,5 +112,17 @@ public interface UtilMapper {
             "WHERE `problem_id` = #{problemId}",
     })
     int getProblemSubNum(int problemId);
+
+    @Select({"SELECT COUNT(*)",
+            "FROM `submissions`",
+            "WHERE `user_id` = #{userId} AND `sub_time` > #{beginDate} AND `sub_time` < #{endDate} AND `result` = 1",
+    })
+    int getAcPRByUID(int userId, Date beginDate, Date endDate);
+
+    @Select({"SELECT COUNT(*)",
+            "FROM `submissions`",
+            "WHERE `user_id` = #{userId} AND `sub_time` > #{beginDate} AND `sub_time` < #{endDate}",
+    })
+    int getAllPRByUID(int userId, Date beginDate, Date endDate);
 
 }

@@ -13,9 +13,9 @@ import cn.watermelon.watermelonjudge.util.ConvertUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 public class SubServiceImpl implements SubService {
@@ -132,6 +132,7 @@ public class SubServiceImpl implements SubService {
         if (problemResultMapper.getAllSubmissionsByUser(userId).size() < 5) {
             problemDTOS.addAll(utilMapper.getProblems());
         } else {
+
             userAbilitiys.sort(new Comparator<UserAbilitiy>() {
                 @Override
                 public int compare(UserAbilitiy o1, UserAbilitiy o2) {
@@ -161,7 +162,6 @@ public class SubServiceImpl implements SubService {
                     }
                 }
             }
-
         }
 
         problemDTOS.sort(new Comparator<ProblemDTO>() {
@@ -176,6 +176,38 @@ public class SubServiceImpl implements SubService {
         });
 
         return problemDTOS;
+    }
+
+    @Override
+    public List<UserActivity> getUserActivity(int userId) {
+        Calendar c = Calendar.getInstance();
+        Date endDate = new Date();
+        endDate.setHours(0);
+        endDate.setMinutes(0);
+        c.setTime(endDate);
+        c.add(Calendar.DATE, -30);
+        Date beginDate = c.getTime();
+
+        List<UserActivity> userActivities = new ArrayList<>();
+
+        while (true) {
+            if (beginDate.equals(endDate)) {
+                break;
+            }
+            c.setTime(beginDate);
+            c.add(Calendar.DATE, 1);
+            Date nxtDate = c.getTime();
+            UserActivity userActivity = new UserActivity();
+            userActivity.setAcNum(utilMapper.getAcPRByUID(userId, beginDate, nxtDate));
+            userActivity.setSubNum(utilMapper.getAllPRByUID(userId, beginDate, nxtDate));
+            userActivity.setDate(beginDate);
+
+            userActivities.add(userActivity);
+
+            beginDate = nxtDate;
+        }
+
+        return userActivities;
     }
 
 }

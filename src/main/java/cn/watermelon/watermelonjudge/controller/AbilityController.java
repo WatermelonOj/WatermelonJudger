@@ -1,9 +1,6 @@
 package cn.watermelon.watermelonjudge.controller;
 
-import cn.watermelon.watermelonjudge.dto.JudgeCount;
-import cn.watermelon.watermelonjudge.dto.ProblemDTO;
-import cn.watermelon.watermelonjudge.dto.UserAbilitiy;
-import cn.watermelon.watermelonjudge.dto.UserLanguage;
+import cn.watermelon.watermelonjudge.dto.*;
 import cn.watermelon.watermelonjudge.services.SubService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,6 +34,11 @@ public class AbilityController {
     @RequestMapping(value = "/problem", method = RequestMethod.GET)
     List<ProblemDTO> getUserProblem(int userId) {
         return subService.getUserProblem(userId);
+    }
+
+    @RequestMapping(value = "/activity", method = RequestMethod.GET)
+    List<UserActivity> getUserActivity(int userId) {
+        return subService.getUserActivity(userId);
     }
 
 }
