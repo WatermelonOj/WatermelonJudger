@@ -10,6 +10,7 @@ import cn.watermelon.watermelonjudge.mapper.ProblemResultMapper;
 import cn.watermelon.watermelonjudge.mapper.UtilMapper;
 import cn.watermelon.watermelonjudge.services.SubService;
 import cn.watermelon.watermelonjudge.util.ConvertUtil;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -89,7 +90,7 @@ public class SubServiceImpl implements SubService {
 
             int level = (int) Math.sqrt(Math.sqrt(now / all)) * 6;
             if (level > 6) level = 6;
-            if (level <= 0) level = 0;
+            if (level <= 1) level = 1;
 
             userAbilitiy.setLevel(level);
         }
@@ -179,7 +180,7 @@ public class SubServiceImpl implements SubService {
     }
 
     @Override
-    public List<UserActivity> getUserActivity(int userId) {
+    public UserActivity getUserActivity(int userId) {
         Calendar c = Calendar.getInstance();
         Date endDate = new Date();
         endDate.setHours(0);
@@ -188,7 +189,11 @@ public class SubServiceImpl implements SubService {
         c.add(Calendar.DATE, -30);
         Date beginDate = c.getTime();
 
-        List<UserActivity> userActivities = new ArrayList<>();
+        UserActivity userActivity = new UserActivity();
+
+        List<Integer> acNums = new ArrayList<>();
+        List<Integer> subNums = new ArrayList<>();
+        List<Date> dates = new ArrayList<>();
 
         while (true) {
             if (beginDate.equals(endDate)) {
@@ -197,17 +202,18 @@ public class SubServiceImpl implements SubService {
             c.setTime(beginDate);
             c.add(Calendar.DATE, 1);
             Date nxtDate = c.getTime();
-            UserActivity userActivity = new UserActivity();
-            userActivity.setAcNum(utilMapper.getAcPRByUID(userId, beginDate, nxtDate));
-            userActivity.setSubNum(utilMapper.getAllPRByUID(userId, beginDate, nxtDate));
-            userActivity.setDate(beginDate);
-
-            userActivities.add(userActivity);
+            acNums.add(utilMapper.getAcPRByUID(userId, beginDate, nxtDate));
+            subNums.add(utilMapper.getAllPRByUID(userId, beginDate, nxtDate));
+            dates.add(beginDate);
 
             beginDate = nxtDate;
         }
 
-        return userActivities;
+        userActivity.setAcNums(acNums);
+        userActivity.setSubNums(subNums);
+        userActivity.setDates(dates);
+
+        return userActivity;
     }
 
 }

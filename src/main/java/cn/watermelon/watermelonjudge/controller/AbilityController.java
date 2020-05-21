@@ -37,7 +37,7 @@ public class AbilityController {
     }
 
     @RequestMapping(value = "/activity", method = RequestMethod.GET)
-    List<UserActivity> getUserActivity(int userId) {
+    UserActivity getUserActivity(int userId) {
         return subService.getUserActivity(userId);
     }
 

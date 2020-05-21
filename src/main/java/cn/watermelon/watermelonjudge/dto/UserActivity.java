@@ -4,15 +4,16 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class UserActivity {
 
-    int acNum;
+    List<Integer> acNums;
 
-    int subNum;
+    List<Integer> subNums;
 
     @JsonFormat(pattern = "yyyy-MM-dd", timezone="GMT+8")
-    Date date;
+    List<Date> dates;
 
 }

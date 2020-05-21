@@ -16,6 +16,6 @@ public interface SubService {
 
     List<ProblemDTO> getUserProblem(int userId);
 
-    List<UserActivity> getUserActivity(int userId);
+    UserActivity getUserActivity(int userId);
 
 }
