@@ -16,6 +16,8 @@ public interface RecordService {
 
     Problem getProblemById(Integer problemId);
 
+    String getUserLastSubmission(int problemId, int userId);
+
     void updateProblemResultStatusById(Integer problemResultId, Integer status);
 
     void updateProblemResult(ProblemResult problemResult);

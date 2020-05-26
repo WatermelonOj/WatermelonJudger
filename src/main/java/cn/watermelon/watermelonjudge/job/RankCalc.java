@@ -75,6 +75,7 @@ public class RankCalc {
                 } else {
                     proInfo.setStatus(0);
                 }
+                if (status == 0 || status == 2 || status == 8 || status == 9) continue;
                 proInfo.setTries(proInfo.getTries() + 1);
             }
 

@@ -24,6 +24,14 @@ public interface ProblemResultMapper {
     })
     Problem getProblemById(Integer problemId);
 
+    @Select({"SELECT `code`",
+            "FROM `submissions`",
+            "WHERE `problem_id` = #{problemId} AND `user_id` = #{userId}",
+            "ORDER BY `sub_time` DESC",
+            "LIMIT 0, 1",
+    })
+    String getUserLastSubmission(int problemId, int userId);
+
     @Select({"SELECT `username`",
             "FROM `user`",
             "WHERE `user_id` = #{userId}",

@@ -38,7 +38,7 @@ public class JudgeServiceImpl implements JudgeService {
     private static final String envOs = CmdUtil.envOs;
 
     @Value("/home/admin/problem")
-//    @Value("C:\\Users\\74798\\Desktop\\problem")
+//    @Value("/Users/szki/Desktop/problem")
     private String fileServerTestcaseDir;
 
     private static Runtime runtime = Runtime.getRuntime();
@@ -82,6 +82,15 @@ public class JudgeServiceImpl implements JudgeService {
         }
 
         if (compileErrorOutput == null || "".equals(compileErrorOutput) || cmd != null) {
+
+            if (rejudge != true) {
+                String code = problemResult.getSourceCode();
+                String lastCode = recordService.getUserLastSubmission(problemResult.getProblemId(), problemResult.getUserId());
+                if (lastCode != null && lastCode.equals(code)) {
+                    problemResult.setErrorMsg(new String("**代码重复提交**\n\n") + code);
+                }
+            }
+
             try {
                 String execPath = userDirPath + envOs;
                 if (LanguageEnum.Java8.getType().equals(problemResult.getLanguage())) {
@@ -100,6 +109,15 @@ public class JudgeServiceImpl implements JudgeService {
                 recordService.updateProblemResultStatusById(problemResult.getSubId(), problemResult.getStatus());
                 userDirPath = null;
             }
+
+            if (problemResult.getErrorMsg().substring(0, 3) == "**代") {
+                problemResult.setStatus(JudgeStatusEnum.Compile_Error.getStatus());
+                problemResult.setRunMemory(0L);
+                problemResult.setRunTime(0L);
+                recordService.updateProblemResult(problemResult);
+                return null;
+            }
+
             problemResult.setErrorMsg(compileErrorOutput);
             return userDirPath;
         } else {

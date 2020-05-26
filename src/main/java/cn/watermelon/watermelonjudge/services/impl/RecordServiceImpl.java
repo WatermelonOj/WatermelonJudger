@@ -30,6 +30,11 @@ public class RecordServiceImpl implements RecordService {
         return problemResultMapper.getProblemById(problemId);
     }
 
+    @Override
+    public String getUserLastSubmission(int problemId, int userId) {
+        return problemResultMapper.getUserLastSubmission(problemId, userId);
+    }
+
     /**
      * 更新题目结果
      * @return
