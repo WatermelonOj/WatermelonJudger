@@ -1,6 +1,7 @@
 package cn.watermelon.watermelonjudge.services.impl;
 
 import cn.watermelon.watermelonjudge.dto.*;
+import cn.watermelon.watermelonjudge.entity.Problem;
 import cn.watermelon.watermelonjudge.entity.ProblemResult;
 import cn.watermelon.watermelonjudge.enumeration.JudgeStatusEnum;
 import cn.watermelon.watermelonjudge.enumeration.LanguageEnum;
@@ -69,8 +70,24 @@ public class SubServiceImpl implements SubService {
         }
 
         List<ProblemResult> problemResultList = problemResultMapper.getAllAcSubmissionsByUser(userId);
-
         int all = problemResultList.size();
+
+        int []list = new int[15];
+        ProblemTag[] problemTags = ProblemTag.values();
+        List<Integer> problemIds = utilMapper.getProblemList();
+        for (Integer problemId: problemIds) {
+            List<String> tags = utilMapper.getProblemTag(problemId);
+            if (tags == null || tags.size() == 0) {
+                tags.add(ProblemTag.SiWei.getDesc());
+            }
+            for (String tag: tags) {
+                ProblemTag problemTag = ProblemTag.getProblemTag(tag);
+                int type = problemTag.getType() + 1;
+                list[type] += 1;
+            }
+        }
+
+
         for (ProblemResult problemResult: problemResultList) {
             int problemId = problemResult.getProblemId();
             List<String> tags = utilMapper.getProblemTag(problemId);
@@ -79,20 +96,23 @@ public class SubServiceImpl implements SubService {
             }
             for (String tag: tags) {
                 ProblemTag problemTag = ProblemTag.getProblemTag(tag);
-//                UserAbilitiy userAbilitiy =
-                        userAbilitiys.get(problemTag.getType() + 1).addOne();
-//                userAbilitiy.setNum(userAbilitiy.getNum() + 1);
+                userAbilitiys.get(problemTag.getType() + 1).addOne();
             }
         }
 
+        int i = 0;
         for (UserAbilitiy userAbilitiy: userAbilitiys) {
             int now = userAbilitiy.getNum();
+            if (Math.abs(now - list[i]) < 3) {
+                list[i] += 4;
+            }
 
-            int level = (int) Math.sqrt(Math.sqrt(now / all)) * 6;
+            int level = (int) Math.sqrt(Math.sqrt(now / all) *  Math.sqrt(now / list[i])) * 6;
             if (level > 6) level = 6;
             if (level <= 1) level = 1;
 
             userAbilitiy.setLevel(level);
+            i++;
         }
 
         return userAbilitiys;
@@ -176,7 +196,7 @@ public class SubServiceImpl implements SubService {
             }
         });
 
-        return problemDTOS;
+        return problemDTOS.subList(0, 10);
     }
 
     @Override

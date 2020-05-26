@@ -113,6 +113,11 @@ public interface UtilMapper {
     })
     int getProblemSubNum(int problemId);
 
+    @Select({"SELECT `problem_id`",
+            "FROM `problem`",
+    })
+    List<Integer> getProblemList();
+
     @Select({"SELECT COUNT(*)",
             "FROM `submissions`",
             "WHERE `user_id` = #{userId} AND `sub_time` > #{beginDate} AND `sub_time` < #{endDate} AND `result` = 1",

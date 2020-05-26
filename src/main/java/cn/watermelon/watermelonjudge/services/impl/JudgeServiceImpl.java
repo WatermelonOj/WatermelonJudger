@@ -110,14 +110,6 @@ public class JudgeServiceImpl implements JudgeService {
                 userDirPath = null;
             }
 
-            if (problemResult.getErrorMsg().substring(0, 3) == "**代") {
-                problemResult.setStatus(JudgeStatusEnum.Compile_Error.getStatus());
-                problemResult.setRunMemory(0L);
-                problemResult.setRunTime(0L);
-                recordService.updateProblemResult(problemResult);
-                return null;
-            }
-
             problemResult.setErrorMsg(compileErrorOutput);
             return userDirPath;
         } else {
