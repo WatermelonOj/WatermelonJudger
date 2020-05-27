@@ -38,6 +38,8 @@ public class ProblemResult implements Serializable {
 
     private String sourceCode;
 
+    private boolean rejudge;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     private Date subTime;
 

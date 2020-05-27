@@ -6,6 +6,7 @@ import cn.watermelon.watermelonjudge.entity.ProblemResult;
 import cn.watermelon.watermelonjudge.job.JudgeWork;
 import cn.watermelon.watermelonjudge.job.RankCalc;
 import cn.watermelon.watermelonjudge.services.RecordService;
+import cn.watermelon.watermelonjudge.services.RejudgeService;
 import cn.watermelon.watermelonjudge.services.SubService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,9 @@ public class SubmissionController {
     @Autowired
     private SubService subService;
 
+    @Autowired
+    private RejudgeService rejudgeService;
+
     @RequestMapping(value = "/submit", method = RequestMethod.POST)
     Submission insertSubmission(Integer pid, Integer uid, String language, String code, Integer contestId) {
 
@@ -45,6 +49,7 @@ public class SubmissionController {
         problemResult.setProblemId(pid);
         problemResult.setLanguage(language);
         problemResult.setSourceCode(code);
+        problemResult.setRejudge(false);
 
         return judgeWork.judge(problemResult, false);
     }
@@ -136,6 +141,11 @@ public class SubmissionController {
     @RequestMapping(value = "/good", method = RequestMethod.GET)
     List<Submission> getGoodSubmission(int problemId) {
         return subService.getGoodPr(problemId);
+    }
+
+    @RequestMapping(value = "/hack", method = RequestMethod.POST)
+    boolean problemHack(int problemId, String input, String output, int userId) {
+        return rejudgeService.addProblemTest(problemId, input, output, userId);
     }
 
 }

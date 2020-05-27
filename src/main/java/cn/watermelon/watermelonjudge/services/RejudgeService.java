@@ -10,4 +10,6 @@ public interface RejudgeService {
 
     void updateStatus(int problemId);
 
+    boolean addProblemTest(int problemId, String input, String output, int userId);
+
 }
