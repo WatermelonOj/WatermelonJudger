@@ -1,3 +1,6 @@
+server:
+  port: 8080
+
 # mysql
 spring:
   datasource:
@@ -21,4 +24,3 @@ mybatis:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     map-underscore-to-camel-case: true
-

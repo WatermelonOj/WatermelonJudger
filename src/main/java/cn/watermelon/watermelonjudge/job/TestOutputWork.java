@@ -41,8 +41,8 @@ public class TestOutputWork implements Callable<TestResult> {
 
         // 等待进程执行结束，0 代表正常退出
         int exitValue = process.waitFor();
-        Long usedMemory = futureTask.get();
-//        Long usedMemory = 100L;
+        Long usedMemory = 100L;
+        usedMemory = futureTask.get();
         testResult.setMemory(usedMemory);
 
         if (exitValue != 0 && testResult.getStatus() == null) {

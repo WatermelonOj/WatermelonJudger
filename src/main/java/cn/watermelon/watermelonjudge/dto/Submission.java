@@ -72,13 +72,15 @@ public class Submission {
      */
     private LanguageEnum language;
 
+    private String username;
+
     public Submission(ProblemResult problemResult) {
         this.subId = problemResult.getSubId();
         this.problemId = problemResult.getProblemId();
         this.contestId = problemResult.getContestId();
         this.userId = problemResult.getUserId();
         this.subTime = problemResult.getSubTime();
-        this.runTime = problemResult.getRunMemory();
+        this.runTime = problemResult.getRunTime();
         this.runMemory = problemResult.getRunMemory();
         this.code = problemResult.getSourceCode();
         this.msg = problemResult.getErrorMsg();
