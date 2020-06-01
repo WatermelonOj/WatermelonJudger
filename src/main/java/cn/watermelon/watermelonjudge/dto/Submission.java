@@ -72,6 +72,9 @@ public class Submission {
      */
     private LanguageEnum language;
 
+    /**
+     * 用户名
+     */
     private String username;
 
     public Submission(ProblemResult problemResult) {

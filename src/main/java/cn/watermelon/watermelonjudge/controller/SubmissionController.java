@@ -140,7 +140,7 @@ public class SubmissionController {
 
     @RequestMapping(value = "/good", method = RequestMethod.GET)
     List<Submission> getGoodSubmission(int problemId) {
-        return subService.getGoodPr(problemId);
+        return subService.getGoodPr(problemId).subList(0, 10);
     }
 
     @RequestMapping(value = "/hack", method = RequestMethod.POST)

@@ -2,12 +2,13 @@ package cn.watermelon.watermelonjudge.job;
 
 import cn.watermelon.watermelonjudge.dto.Submission;
 import cn.watermelon.watermelonjudge.entity.ProblemResult;
-import cn.watermelon.watermelonjudge.mapper.RejudgeMapper;
+import cn.watermelon.watermelonjudge.handler.BaseHandler;
 import cn.watermelon.watermelonjudge.services.JudgeService;
 import cn.watermelon.watermelonjudge.services.RejudgeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.socket.TextMessage;
 
 import java.util.List;
 
@@ -33,14 +34,21 @@ public class JudgeWork {
 
         // 运行
         if (userDirPath != null) {
+            BaseHandler.sendMessageToAllUsers(new TextMessage("submission"));
             judgeService.execute(problemResult, userDirPath);
         }
 
         Submission submission = new Submission(problemResult);
+
         if (rejudge != true) {
 
         } else {
 
+        }
+
+        BaseHandler.sendMessageToAllUsers(new TextMessage("submission"));
+        if (problemResult.getContestId() != null) {
+            BaseHandler.sendMessageToAllUsers(new TextMessage("rank"));
         }
         return submission;
     }
