@@ -1,6 +1,7 @@
 package cn.watermelon.watermelonjudge.controller;
 
 import cn.watermelon.watermelonjudge.dto.*;
+import cn.watermelon.watermelonjudge.services.RecordService;
 import cn.watermelon.watermelonjudge.services.SubService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +16,9 @@ public class AbilityController {
 
     @Autowired
     private SubService subService;
+
+    @Autowired
+    private RecordService recordService;
 
     @RequestMapping(value = "/result", method = RequestMethod.GET)
     List<JudgeCount> getUserJudgeResult(int userId) {
@@ -39,6 +43,16 @@ public class AbilityController {
     @RequestMapping(value = "/activity", method = RequestMethod.GET)
     UserActivity getUserActivity(int userId) {
         return subService.getUserActivity(userId);
+    }
+
+    @RequestMapping(value = "/acNum", method = RequestMethod.GET)
+    int getUserAcNum(int userId) {
+        return recordService.getUserAcNum(userId);
+    }
+
+    @RequestMapping(value = "/subNum", method = RequestMethod.GET)
+    int getUserSubNum(int userId) {
+        return recordService.getUserSubNum(userId);
     }
 
 }

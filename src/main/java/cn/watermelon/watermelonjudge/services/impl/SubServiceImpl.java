@@ -7,11 +7,11 @@ import cn.watermelon.watermelonjudge.enumeration.JudgeStatusEnum;
 import cn.watermelon.watermelonjudge.enumeration.LanguageEnum;
 import cn.watermelon.watermelonjudge.enumeration.ProblemTag;
 import cn.watermelon.watermelonjudge.enumeration.TagSort;
+import cn.watermelon.watermelonjudge.job.AppWork;
 import cn.watermelon.watermelonjudge.mapper.ProblemResultMapper;
 import cn.watermelon.watermelonjudge.mapper.UtilMapper;
 import cn.watermelon.watermelonjudge.services.SubService;
 import cn.watermelon.watermelonjudge.util.ConvertUtil;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,7 +37,7 @@ public class SubServiceImpl implements SubService {
     public List<JudgeCount> getUserJudgeResult(int userId) {
         List<JudgeCount> judgeCounts = new ArrayList<>();
         JudgeStatusEnum[] judgeStatusEnums = JudgeStatusEnum.values();
-        for (JudgeStatusEnum judgeStatusEnum: judgeStatusEnums) {
+        for (JudgeStatusEnum judgeStatusEnum : judgeStatusEnums) {
             if (judgeStatusEnum.equals(JudgeStatusEnum.Compiling) || judgeStatusEnum.equals(JudgeStatusEnum.Queuing)
                     || judgeStatusEnum.equals(JudgeStatusEnum.Judging)) {
                 continue;
@@ -58,7 +58,7 @@ public class SubServiceImpl implements SubService {
     public List<UserAbilitiy> getUserAbility(int userId) {
         List<UserAbilitiy> userAbilitiys = new ArrayList<>();
         TagSort[] tagSorts = TagSort.values();
-        for (TagSort tagSort: tagSorts) {
+        for (TagSort tagSort : tagSorts) {
             String desc = tagSort.getDesc();
             int type = tagSort.getType();
             UserAbilitiy userAbilitiy = new UserAbilitiy();
@@ -72,15 +72,15 @@ public class SubServiceImpl implements SubService {
         List<ProblemResult> problemResultList = problemResultMapper.getAllAcSubmissionsByUser(userId);
         int all = problemResultList.size();
 
-        int []list = new int[15];
+        int[] list = new int[15];
         ProblemTag[] problemTags = ProblemTag.values();
         List<Integer> problemIds = utilMapper.getProblemList();
-        for (Integer problemId: problemIds) {
+        for (Integer problemId : problemIds) {
             List<String> tags = utilMapper.getProblemTag(problemId);
             if (tags == null || tags.size() == 0) {
                 tags.add(ProblemTag.SiWei.getDesc());
             }
-            for (String tag: tags) {
+            for (String tag : tags) {
                 ProblemTag problemTag = ProblemTag.getProblemTag(tag);
                 int type = problemTag.getType() + 1;
                 list[type] += 1;
@@ -88,28 +88,31 @@ public class SubServiceImpl implements SubService {
         }
 
 
-        for (ProblemResult problemResult: problemResultList) {
+        for (ProblemResult problemResult : problemResultList) {
             int problemId = problemResult.getProblemId();
             List<String> tags = utilMapper.getProblemTag(problemId);
             if (tags == null || tags.size() == 0) {
                 tags.add(ProblemTag.SiWei.getDesc());
             }
-            for (String tag: tags) {
+            for (String tag : tags) {
                 ProblemTag problemTag = ProblemTag.getProblemTag(tag);
                 userAbilitiys.get(problemTag.getType() + 1).addOne();
             }
         }
 
         int i = 0;
-        for (UserAbilitiy userAbilitiy: userAbilitiys) {
+        for (UserAbilitiy userAbilitiy : userAbilitiys) {
             int now = userAbilitiy.getNum();
             if (Math.abs(now - list[i]) < 3) {
-                list[i] += 4;
+                list[i] += 2;
             }
 
-            int level = (int) Math.sqrt(Math.sqrt(now / all) *  Math.sqrt(now / list[i])) * 6;
+            int level = (int) Math.sqrt(Math.sqrt(now / all) * Math.sqrt(now / list[i])) * 6;
             if (level > 6) level = 6;
             if (level <= 1) level = 1;
+            if (now > 5 && level <= 3) level += 1;
+            if (now < (all + 2) / 3) level = Math.max(level, 3);
+            if (now < (all + 1) / 2) level = Math.max(level, 4);
 
             userAbilitiy.setLevel(level);
             i++;
@@ -122,7 +125,7 @@ public class SubServiceImpl implements SubService {
     public List<UserLanguage> getUserLanguage(int userId) {
         List<UserLanguage> userLanguages = new ArrayList<>();
         LanguageEnum[] languageEnums = LanguageEnum.values();
-        for (LanguageEnum languageEnum: languageEnums) {
+        for (LanguageEnum languageEnum : languageEnums) {
             String language = languageEnum.getType();
             List<ProblemResult> problemResults = utilMapper.getUserLanguageNumber(userId, language);
             UserLanguage userLanguage = new UserLanguage();
@@ -137,7 +140,7 @@ public class SubServiceImpl implements SubService {
     List<ProblemDTO> getProblemByTag(String tag) {
         List<Integer> problemIds = utilMapper.getProblemsByTag(tag);
         List<ProblemDTO> problemList = new ArrayList<>();
-        for (Integer problemId: problemIds) {
+        for (Integer problemId : problemIds) {
             ProblemDTO problemDTO = utilMapper.getProblemByPID(problemId);
             problemDTO.setAcNum(utilMapper.getProblemAcNum(problemId));
             problemDTO.setSubNum(utilMapper.getProblemSubNum(problemId));
@@ -166,15 +169,15 @@ public class SubServiceImpl implements SubService {
             });
 
             ProblemTag[] problemTags = ProblemTag.values();
-            for (UserAbilitiy userAbilitiy: userAbilitiys) {
+            for (UserAbilitiy userAbilitiy : userAbilitiys) {
                 int tag = userAbilitiy.getType();
-                for (ProblemTag problemTag: problemTags) {
+                for (ProblemTag problemTag : problemTags) {
                     if (tag == problemTag.getType()) {
                         List<ProblemDTO> list = getProblemByTag(problemTag.getDesc());
                         if (list.size() == 0 && tag == -1) {
                             list.addAll(utilMapper.getProblems());
                         }
-                        for (ProblemDTO problemDTO: list) {
+                        for (ProblemDTO problemDTO : list) {
                             if (problemDTOS.contains(problemDTO)) continue;
                             problemDTOS.add(problemDTO);
                         }
@@ -216,9 +219,6 @@ public class SubServiceImpl implements SubService {
         List<Date> dates = new ArrayList<>();
 
         while (true) {
-            if (beginDate.equals(endDate)) {
-                break;
-            }
             c.setTime(beginDate);
             c.add(Calendar.DATE, 1);
             Date nxtDate = c.getTime();
@@ -226,6 +226,9 @@ public class SubServiceImpl implements SubService {
             subNums.add(utilMapper.getAllPRByUID(userId, beginDate, nxtDate));
             dates.add(beginDate);
 
+            if (beginDate.equals(endDate)) {
+                break;
+            }
             beginDate = nxtDate;
         }
 
