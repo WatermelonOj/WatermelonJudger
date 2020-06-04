@@ -5,6 +5,7 @@ import cn.watermelon.watermelonjudge.entity.Problem;
 import cn.watermelon.watermelonjudge.entity.ProblemResult;
 import cn.watermelon.watermelonjudge.enumeration.JudgeStatusEnum;
 import cn.watermelon.watermelonjudge.enumeration.LanguageEnum;
+import cn.watermelon.watermelonjudge.handler.BaseHandler;
 import cn.watermelon.watermelonjudge.job.TestInputWork;
 import cn.watermelon.watermelonjudge.services.*;
 import cn.watermelon.watermelonjudge.util.*;
@@ -12,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.socket.TextMessage;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -64,6 +66,8 @@ public class JudgeServiceImpl implements JudgeService {
         if (!rejudge) {
             problemResult.setStatus(JudgeStatusEnum.Compiling.getStatus());
             int subId = recordService.insertProblemRusult(problemResult);
+            System.out.println("~~~~~judgeImpl " + 69 + "~~~~~~~" + JudgeStatusEnum.getStatusEnum(problemResult.getStatus()).getDesc());
+            BaseHandler.sendMessageToAllUsers(new TextMessage("submission"));
             problemResult.setSubId(subId);
         }
 
@@ -81,15 +85,10 @@ public class JudgeServiceImpl implements JudgeService {
             }
         }
 
-        if (compileErrorOutput == null || "".equals(compileErrorOutput) || cmd != null) {
+        System.out.println("compileErrorOutput = " + compileErrorOutput);
+        System.out.println("cmd = " + cmd);
 
-            if (rejudge != true) {
-                String code = problemResult.getSourceCode();
-                String lastCode = recordService.getUserLastSubmission(problemResult.getProblemId(), problemResult.getUserId());
-                if (lastCode != null && lastCode.equals(code)) {
-                    problemResult.setErrorMsg(new String("**代码重复提交**\n\n") + code);
-                }
-            }
+        if (compileErrorOutput == null || "".equals(compileErrorOutput) || cmd != null) {
 
             try {
                 String execPath = userDirPath + envOs;
@@ -106,6 +105,7 @@ public class JudgeServiceImpl implements JudgeService {
                 }
             } catch (Exception e) {
                 problemResult.setStatus(JudgeStatusEnum.Compile_Error.getStatus());
+                System.out.println("~~~~~judgeImpl " + 104 + "~~~~~~~" + JudgeStatusEnum.getStatusEnum(problemResult.getStatus()).getDesc());
                 recordService.updateProblemResultStatusById(problemResult.getSubId(), problemResult.getStatus());
                 userDirPath = null;
             }
@@ -116,6 +116,7 @@ public class JudgeServiceImpl implements JudgeService {
             // update compile error
             compileErrorOutput = StringUtil.getLimitLenghtByString(compileErrorOutput, 10000);
             problemResult.setStatus(JudgeStatusEnum.Compile_Error.getStatus());
+            System.out.println("~~~~~judgeImpl " + 114 + "~~~~~~~" + JudgeStatusEnum.Compile_Error.getDesc());
             problemResult.setErrorMsg(compileErrorOutput);
             problemResult.setRunMemory(0L);
             problemResult.setRunTime(0L);
@@ -132,8 +133,16 @@ public class JudgeServiceImpl implements JudgeService {
      */
     @Override
     public void execute(ProblemResult problemResult, String userDirPath) {
+
+        if (userDirPath == null) {
+            recordService.updateProblemResultStatusById(problemResult.getSubId(), JudgeStatusEnum.Compile_Error.getStatus());
+            System.out.println("~~~~~judgeImpl " + 133 + "~~~~~~~" + JudgeStatusEnum.Compile_Error.getDesc());
+            return;
+        }
+
 //         update judging
         recordService.updateProblemResultStatusById(problemResult.getSubId(), JudgeStatusEnum.Judging.getStatus());
+        problemResult.setStatus(JudgeStatusEnum.Judging.getStatus());
 
         String problemDirPath = fileServerTestcaseDir + envOs + problemResult.getProblemId();
         String inputFileDirPath = problemDirPath + envOs + "input";
@@ -214,6 +223,7 @@ public class JudgeServiceImpl implements JudgeService {
                     if (JudgeStatusEnum.Runtime_Error.getStatus().equals(testResult.getStatus())) {
                         // RE
                         status = JudgeStatusEnum.Runtime_Error.getStatus();
+                        System.out.println("~~~~~judgeImpl " + 226 + "~~~~~~~" + JudgeStatusEnum.Runtime_Error.getDesc());
                     } else if (JudgeStatusEnum.Presentation_Error.getStatus().equals(testResult.getStatus())) {
                         // PE
                         status = JudgeStatusEnum.Presentation_Error.getStatus();
@@ -233,7 +243,7 @@ public class JudgeServiceImpl implements JudgeService {
 //            System.out.println("AC_count " + acCount);
 //            System.out.println("test size " + testResultList.size());
             // AC condition
-            if (acCount == testResultList.size()) {
+            if (acCount == testResultList.size() || testResultList.size() == 0) {
                 status = JudgeStatusEnum.Accept.getStatus();
             }
 
@@ -241,6 +251,11 @@ public class JudgeServiceImpl implements JudgeService {
             problemResult.setRunMemory(maxMemory);
             problemResult.setRunTime(maxTime);
             problemResult.setStatus(status);
+            System.out.println("~~~~~judgeImpl " + 244 + "~~~~~~~" + JudgeStatusEnum.getStatusEnum(problemResult.getStatus()).getDesc());
+            if (problemResult.getStatus() == JudgeStatusEnum.Compiling.getStatus()) {
+                problemResult.setStatus(JudgeStatusEnum.Accept.getStatus());
+                System.out.println("~~~~~judgeImpl " + 252 + "~~~~~~~" + JudgeStatusEnum.getStatusEnum(problemResult.getStatus()).getDesc());
+            }
             recordService.updateProblemResult(problemResult);
 
         } catch (Exception e) {
@@ -248,7 +263,9 @@ public class JudgeServiceImpl implements JudgeService {
             String message = StringUtil.getLimitLenghtByString(e.getMessage(), 1000);
             problemResult.setErrorMsg(message);
 
+            problemResult.setStatus(JudgeStatusEnum.Runtime_Error.getStatus());
             recordService.updateProblemResultStatusById(problemResult.getProblemId(), JudgeStatusEnum.Runtime_Error.getStatus());
+            System.out.println("~~~~~judgeImpl " + 262 + "~~~~~~~" + JudgeStatusEnum.getStatusEnum(problemResult.getStatus()).getDesc());
 
             log.info("执行脚本错误或闭锁终端, e = ", e);
         } finally {

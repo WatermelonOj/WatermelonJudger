@@ -1,13 +1,11 @@
 package cn.watermelon.watermelonjudge.services.impl;
 
 import cn.watermelon.watermelonjudge.dto.*;
-import cn.watermelon.watermelonjudge.entity.Problem;
 import cn.watermelon.watermelonjudge.entity.ProblemResult;
 import cn.watermelon.watermelonjudge.enumeration.JudgeStatusEnum;
 import cn.watermelon.watermelonjudge.enumeration.LanguageEnum;
 import cn.watermelon.watermelonjudge.enumeration.ProblemTag;
 import cn.watermelon.watermelonjudge.enumeration.TagSort;
-import cn.watermelon.watermelonjudge.job.AppWork;
 import cn.watermelon.watermelonjudge.mapper.ProblemResultMapper;
 import cn.watermelon.watermelonjudge.mapper.UtilMapper;
 import cn.watermelon.watermelonjudge.services.SubService;
@@ -15,8 +13,6 @@ import cn.watermelon.watermelonjudge.util.ConvertUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -108,11 +104,18 @@ public class SubServiceImpl implements SubService {
             }
 
             int level = (int) Math.sqrt(Math.sqrt(now / all) * Math.sqrt(now / list[i])) * 6;
+
+            level = (int) Math.sqrt(level * 2 + level * Math.sqrt(level));
             if (level > 6) level = 6;
             if (level <= 1) level = 1;
+
             if (now > 5 && level <= 3) level += 1;
             if (now < (all + 2) / 3) level = Math.max(level, 3);
             if (now < (all + 1) / 2) level = Math.max(level, 4);
+            if (now < 5) level = Math.max(level, 2);
+            if (now < 10) level = Math.max(level, 3);
+            if (level <= 1) level = 1;
+            if (level >= 3) level -= 1;
 
             userAbilitiy.setLevel(level);
             i++;

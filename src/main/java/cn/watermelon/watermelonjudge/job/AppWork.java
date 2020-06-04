@@ -3,8 +3,6 @@ package cn.watermelon.watermelonjudge.job;
 import cn.watermelon.watermelonjudge.dto.Submission;
 import cn.watermelon.watermelonjudge.services.RecordService;
 import cn.watermelon.watermelonjudge.services.impl.RecordServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.*;
 
@@ -14,7 +12,7 @@ public class AppWork {
 
     double[][] sim = new double[1205][1205];
 
-    A[] problem = new A[1205];
+    AppRecord[] problem = new AppRecord[1205];
 
     public List<Integer> getProblem(int userId) {
 
@@ -24,7 +22,7 @@ public class AppWork {
 
         this.getRec(userId);
 
-        Arrays.sort(problem, new A.MyComparator());
+        Arrays.sort(problem, new AppRecord.MyComparator());
         List<Integer> res = new ArrayList<>();
         for (int i = 1; i <= 10; i++) {
             if (problem[i].rec > 0) {
