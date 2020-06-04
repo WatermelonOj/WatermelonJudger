@@ -24,7 +24,13 @@ public interface RecordService {
 
     Integer insertProblemRusult(ProblemResult problemResult);
 
+    int getUserAcNum(int userId);
+
+    int getUserSubNum(int userId);
+
     int getSubmissionsNum(int pageSize);
+
+    List<Submission> getAllSubmissionsByUser(int userId);
 
     List<Submission> getSubmissions(int page, int pageSize);
 

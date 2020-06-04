@@ -43,9 +43,11 @@ public class StringUtil {
     }
 
     // windows下文本以\r\n结尾，linux以\n结尾,mac \r 结尾
-    public static String formatString(String string) {
+    public static String formatString(String string, boolean ret) {
         string = string.replace(" ", "");
-        string = string.replace("\n", "");
+        if (ret == true) {
+            string = string.replace("\n", "");
+        }
         string = string.replace("\r", "");
         string = string.replace("\t", "");
         return string;

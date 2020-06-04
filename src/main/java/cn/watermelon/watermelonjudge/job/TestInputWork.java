@@ -68,7 +68,6 @@ public class TestInputWork implements Runnable {
     @Override
     public void run() {
 
-
         Map<String, TestResult> resultMap = problemResult.getResultMap();
         String inputFileName = inputFile.getName();
 
@@ -91,11 +90,11 @@ public class TestInputWork implements Runnable {
 
         int base = 1;
         try {
-            // 计算时间， 等待题目时限 + 200 ms
             if (!problemResult.getLanguage().equals(LanguageEnum.C.getType()) && !problemResult.getLanguage().equals(LanguageEnum.CPP.getType())) {
                 base = 2;
             }
-            testResult = task.get(problem.getTimeLimit() * base + 500, TimeUnit.MILLISECONDS);
+            // 计算时间， 等待题目时限 + 1000 ms
+            testResult = task.get(problem.getTimeLimit() * base + 1000, TimeUnit.MILLISECONDS);
             if (!JudgeStatusEnum.Runtime_Error.getStatus().equals(testResult.getStatus())) {
                 File outputFile = new File(outputFileDirPath + envOs + inputFileName);
                 checkAnswer(problem, outputFile, testResult, base);
@@ -119,6 +118,7 @@ public class TestInputWork implements Runnable {
             if (testResult.getMemory() == null) {
                 testResult.setMemory(problem.getMemoryLimit() + 10L);
             }
+            System.out.println("~~~~~TIWork " + 121 + "~~~~~~~" + JudgeStatusEnum.getStatusEnum(problemResult.getStatus()).getDesc());
             resultMap.put(testCaseNum, testResult);
             Stream<ProcessHandle> descendants = process.descendants();
             descendants.forEach(ProcessHandle::destroyForcibly);
@@ -153,15 +153,22 @@ public class TestInputWork implements Runnable {
                 // AC
 //                System.out.println("judge AC");
                 testResult.setStatus(JudgeStatusEnum.Accept.getStatus());
+                System.out.println("~~~~~TIWork " + 155 + "~~~~~~~" + JudgeStatusEnum.getStatusEnum(testResult.getStatus()).getDesc());
             } else {
-                if (StringUtil.formatString(answerOutput).equals(StringUtil.formatString(userOutput))) {
+                if (StringUtil.formatString(answerOutput, false).equals(StringUtil.formatString(userOutput, false))) {
+
+                    testResult.setStatus(JudgeStatusEnum.Accept.getStatus());
+                    System.out.println("~~~~~TIWork " + 161 + "~~~~~~~" + JudgeStatusEnum.getStatusEnum(testResult.getStatus()).getDesc());
+                } else if (StringUtil.formatString(answerOutput, true).equals(StringUtil.formatString(userOutput, true))) {
                     // PE
 //                    System.out.println("judge PE");
                     testResult.setStatus(JudgeStatusEnum.Presentation_Error.getStatus());
+                    System.out.println("~~~~~TIWork " + 166 + "~~~~~~~" + JudgeStatusEnum.getStatusEnum(testResult.getStatus()).getDesc());
                 } else {
                     // WA
 //                    System.out.println("judge WA");
                     testResult.setStatus(JudgeStatusEnum.Wrong_Answer.getStatus());
+                    System.out.println("~~~~~TIWork " + 170 + "~~~~~~~" + JudgeStatusEnum.Wrong_Answer.getDesc());
                 }
             }
 
@@ -169,6 +176,7 @@ public class TestInputWork implements Runnable {
             e.printStackTrace();
             // RE
             testResult.setStatus(JudgeStatusEnum.Runtime_Error.getStatus());
+            System.out.println("~~~~~TIWork " + 179 + "~~~~~~~" + JudgeStatusEnum.Runtime_Error.getDesc());
             log.info("when judging , e = ", e.getMessage());
         }
     }

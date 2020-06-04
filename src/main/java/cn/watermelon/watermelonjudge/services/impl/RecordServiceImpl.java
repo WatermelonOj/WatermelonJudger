@@ -51,9 +51,24 @@ public class RecordServiceImpl implements RecordService {
     }
 
     @Override
+    public int getUserAcNum(int userId) {
+        return problemResultMapper.getAllAcSubmissionsByUser(userId).size();
+    }
+
+    @Override
+    public int getUserSubNum(int userId) {
+        return problemResultMapper.getAllSubmissionsByUser(userId).size();
+    }
+
+    @Override
     public int getSubmissionsNum(int pageSize) {
         int num = problemResultMapper.getSubmissionsNumber();
         return (num + pageSize - 1) / pageSize;
+    }
+
+    @Override
+    public List<Submission> getAllSubmissionsByUser(int userId) {
+        return ConvertUtil.prs2Subs(problemResultMapper.getAllSubmissionsByUser(userId), problemResultMapper);
     }
 
     /**

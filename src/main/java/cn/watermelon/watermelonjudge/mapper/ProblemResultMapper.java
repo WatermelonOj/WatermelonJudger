@@ -177,11 +177,11 @@ public interface ProblemResultMapper {
     })
     List<ProblemResult> getSubmissionsByLanguage(String language, int begin, int pageSize);
 
-//    @Select({"SELECT *",
-//            "FROM `submissions`",
-//            "WHERE `is_delete` = false ",
-//    })
-//    List<ProblemResult> getSubmissions(Integer status);
+    @Select({"SELECT *",
+            "FROM `submissions`",
+            "WHERE `is_delete` = false",
+    })
+    List<ProblemResult> getAllSubmissions();
 
     @Update({"UPDATE `submissions` set",
             "`run_time` = #{runTime}, `run_memory` = #{runMemory}, `result` = #{status}",

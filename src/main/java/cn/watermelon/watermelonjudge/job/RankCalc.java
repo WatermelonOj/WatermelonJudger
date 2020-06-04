@@ -4,6 +4,8 @@ import cn.watermelon.watermelonjudge.dto.ProInfo;
 import cn.watermelon.watermelonjudge.dto.Rank;
 import cn.watermelon.watermelonjudge.entity.ProblemResult;
 import cn.watermelon.watermelonjudge.mapper.ProblemResultMapper;
+import cn.watermelon.watermelonjudge.mapper.UtilMapper;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,6 +19,9 @@ public class RankCalc {
     @Autowired
     private ProblemResultMapper problemResultMapper;
 
+    @Autowired
+    private UtilMapper utilMapper;
+
     public List<Rank> getRankList(int contestId) {
 
         List<ProblemResult> prList = problemResultMapper.getSubmissionsByContestId(contestId);
@@ -25,7 +30,15 @@ public class RankCalc {
 
         Map<Integer, Integer> user = new HashMap<>();
 
+        Date endTime = utilMapper.getContestByContestId(contestId);
+        System.out.println("EndTime: " + endTime);
+
         for (ProblemResult problemResult : prList) {
+
+            Date subTime = problemResult.getSubTime();
+            if (subTime.compareTo(endTime) > 0) {
+                continue;
+            }
 
             int userId = problemResult.getUserId();
             int problemId = problemResult.getProblemId();

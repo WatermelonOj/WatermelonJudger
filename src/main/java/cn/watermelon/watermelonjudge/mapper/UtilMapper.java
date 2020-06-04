@@ -13,6 +13,15 @@ import java.util.List;
 @Mapper
 public interface UtilMapper {
 
+    @Select({"SELECT `end_time`",
+            "FROM `contest`",
+            "WHERE `is_delete` = false AND `contest_id` = #{contestId}",
+    })
+    @Results(value = {
+            @Result(property = "endTime", column = "end_time"),
+    })
+    Date getContestByContestId(int contestId);
+
     @Select({"SELECT *",
             "FROM `submissions`",
             "WHERE `problem_id` = #{problemId} AND `is_delete` = false AND `result` = 1",
